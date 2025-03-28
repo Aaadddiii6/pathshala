@@ -103,7 +103,7 @@ function ARLearning() {
       <MDBox pt={6} pb={3}>
         <Grid container spacing={6}>
           <Grid item xs={12}>
-            <Card>
+            <Card sx={{ background: "rgba(255, 255, 255, 0.1)", backdropFilter: "blur(10px)" }}>
               <MDBox
                 mx={2}
                 mt={-3}
@@ -118,157 +118,189 @@ function ARLearning() {
                   AR Learning
                 </MDTypography>
               </MDBox>
-              <MDBox pt={3} px={3}>
-                {/* Search and Filter Options */}
-                <MDBox display="flex" flexWrap="wrap" gap={2} mb={4}>
-                  <MDBox flexGrow={1} minWidth="200px">
-                    <input
-                      type="text"
-                      placeholder="Search topics..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      style={{
-                        width: "100%",
-                        padding: "8px 16px",
-                        borderRadius: "8px",
-                        border: "1px solid #ccc",
-                        background: "rgba(255, 255, 255, 0.1)",
-                        color: "white",
-                      }}
-                    />
-                  </MDBox>
-                  <MDBox minWidth="200px">
-                    <select
-                      value={selectedCategory}
-                      onChange={(e) => setSelectedCategory(e.target.value)}
-                      style={{
-                        width: "100%",
-                        padding: "8px 16px",
-                        borderRadius: "8px",
-                        border: "1px solid #ccc",
-                        background: "rgba(255, 255, 255, 0.1)",
-                        color: "white",
-                      }}
-                    >
-                      {categories.map((category) => (
-                        <option key={category} value={category}>
-                          {category}
-                        </option>
-                      ))}
-                    </select>
-                  </MDBox>
-                  <MDBox minWidth="200px">
-                    <select
-                      value={selectedSubject}
-                      onChange={(e) => setSelectedSubject(e.target.value)}
-                      style={{
-                        width: "100%",
-                        padding: "8px 16px",
-                        borderRadius: "8px",
-                        border: "1px solid #ccc",
-                        background: "rgba(255, 255, 255, 0.1)",
-                        color: "white",
-                      }}
-                    >
-                      {subjects.map((subject) => (
-                        <option key={subject} value={subject}>
-                          {subject}
-                        </option>
-                      ))}
-                    </select>
-                  </MDBox>
-                </MDBox>
 
-                {/* Display Scenarios */}
-                <Grid container spacing={3}>
-                  {filteredScenarios.map((scenario) => (
-                    <Grid item xs={12} md={6} lg={4} key={scenario.id}>
-                      <Card
-                        sx={{
-                          height: "100%",
-                          background: "rgba(255, 255, 255, 0.1)",
-                          backdropFilter: "blur(10px)",
-                          border: "1px solid rgba(255, 255, 255, 0.2)",
-                          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+              {/* Search and Filter Options */}
+              <MDBox display="flex" flexWrap="wrap" gap={2} mb={4} p={2}>
+                <MDBox flexGrow={1} minWidth="200px">
+                  <input
+                    type="text"
+                    placeholder="Search topics..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    style={{
+                      width: "100%",
+                      padding: "8px 16px",
+                      borderRadius: "8px",
+                      border: "1px solid rgba(255, 255, 255, 0.2)",
+                      background: "rgba(255, 255, 255, 0.1)",
+                      color: "#2196F3",
+                      fontSize: "14px",
+                    }}
+                    className="search-input"
+                  />
+                </MDBox>
+                <MDBox minWidth="200px">
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    style={{
+                      width: "100%",
+                      padding: "8px 16px",
+                      borderRadius: "8px",
+                      border: "1px solid rgba(255, 255, 255, 0.2)",
+                      background: "rgba(255, 255, 255, 0.1)",
+                      color: "#2196F3",
+                      fontSize: "14px",
+                      cursor: "pointer",
+                      WebkitAppearance: "none",
+                      MozAppearance: "none",
+                      appearance: "none",
+                      backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232196F3'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e")`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "right 8px center",
+                      backgroundSize: "20px",
+                    }}
+                  >
+                    {categories.map((category) => (
+                      <option
+                        key={category}
+                        value={category}
+                        style={{
+                          background: "#1a237e",
+                          color: "#2196F3",
+                          padding: "8px",
                         }}
                       >
-                        <MDBox p={3}>
-                          <MDBox
-                            display="flex"
-                            alignItems="center"
-                            mb={2}
-                            sx={{ cursor: "pointer" }}
-                          >
-                            <Icon sx={{ color: "info.main", mr: 1, fontSize: "2rem" }}>
-                              view_in_ar
-                            </Icon>
-                            <MDTypography variant="h5" color="white" fontWeight="bold">
-                              {scenario.title}
-                            </MDTypography>
-                          </MDBox>
-                          <img
-                            src={scenario.image}
-                            alt={scenario.title}
-                            style={{
-                              width: "100%",
-                              height: "200px",
-                              objectFit: "cover",
-                              borderRadius: "8px",
-                              marginBottom: "16px",
-                            }}
-                          />
-                          <MDTypography variant="body2" color="white" mb={3}>
-                            {scenario.description}
-                          </MDTypography>
-                          {showAR === scenario.id ? (
-                            <MDBox>
-                              <model-viewer
-                                src={scenario.model}
-                                alt={`3D model of ${scenario.title}`}
-                                ar
-                                ar-modes="webxr scene-viewer quick-look"
-                                camera-controls
-                                poster={scenario.image}
-                                shadow-intensity="1"
-                                auto-rotate
-                                style={{ width: "100%", height: "300px", margin: "0 auto" }}
-                              >
-                                <button slot="ar-button" className="ar-button">
-                                  View in AR
-                                </button>
-                              </model-viewer>
-                              <MDButton
-                                variant="gradient"
-                                color="error"
-                                fullWidth
-                                onClick={() => handleARView(scenario.id)}
-                                sx={{ mt: 2 }}
-                              >
-                                Close AR View
-                              </MDButton>
-                            </MDBox>
-                          ) : (
-                            <MDButton
-                              variant="gradient"
-                              color="info"
-                              fullWidth
-                              onClick={() => handleARView(scenario.id)}
-                              startIcon={<Icon>view_in_ar</Icon>}
-                            >
-                              View in AR
-                            </MDButton>
-                          )}
-                        </MDBox>
-                      </Card>
-                    </Grid>
-                  ))}
-                </Grid>
+                        {category}
+                      </option>
+                    ))}
+                  </select>
+                </MDBox>
+                <MDBox minWidth="200px">
+                  <select
+                    value={selectedSubject}
+                    onChange={(e) => setSelectedSubject(e.target.value)}
+                    style={{
+                      width: "100%",
+                      padding: "8px 16px",
+                      borderRadius: "8px",
+                      border: "1px solid rgba(255, 255, 255, 0.2)",
+                      background: "rgba(255, 255, 255, 0.1)",
+                      color: "#2196F3",
+                      fontSize: "14px",
+                      cursor: "pointer",
+                      WebkitAppearance: "none",
+                      MozAppearance: "none",
+                      appearance: "none",
+                      backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232196F3'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e")`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "right 8px center",
+                      backgroundSize: "20px",
+                    }}
+                  >
+                    {subjects.map((subject) => (
+                      <option
+                        key={subject}
+                        value={subject}
+                        style={{
+                          background: "#1a237e",
+                          color: "#2196F3",
+                          padding: "8px",
+                        }}
+                      >
+                        {subject}
+                      </option>
+                    ))}
+                  </select>
+                </MDBox>
               </MDBox>
+
+              {/* Display Scenarios */}
+              <Grid container spacing={3} p={2}>
+                {filteredScenarios.map((scenario) => (
+                  <Grid item xs={12} md={6} lg={4} key={scenario.id}>
+                    <Card
+                      sx={{
+                        height: "100%",
+                        background: "rgba(255, 255, 255, 0.1)",
+                        backdropFilter: "blur(10px)",
+                        border: "1px solid rgba(255, 255, 255, 0.2)",
+                        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+                      }}
+                    >
+                      <MDBox p={3}>
+                        <MDBox display="flex" alignItems="center" mb={2} sx={{ cursor: "pointer" }}>
+                          <Icon sx={{ color: "#2196F3", mr: 1, fontSize: "2rem" }}>view_in_ar</Icon>
+                          <MDTypography
+                            variant="h5"
+                            color="#2196F3"
+                            fontWeight="bold"
+                            sx={{ textShadow: "0 2px 4px rgba(0,0,0,0.2)" }}
+                          >
+                            {scenario.title}
+                          </MDTypography>
+                        </MDBox>
+                        <img
+                          src={scenario.image}
+                          alt={scenario.title}
+                          style={{
+                            width: "100%",
+                            height: "200px",
+                            objectFit: "cover",
+                            borderRadius: "8px",
+                            marginBottom: "16px",
+                            boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+                          }}
+                        />
+                        <MDTypography
+                          variant="body2"
+                          color="#2196F3"
+                          mb={3}
+                          sx={{
+                            textShadow: "0 1px 2px rgba(0,0,0,0.2)",
+                            opacity: 0.9,
+                          }}
+                        >
+                          {scenario.description}
+                        </MDTypography>
+                        <MDButton
+                          variant="gradient"
+                          color="info"
+                          fullWidth
+                          onClick={() => handleARView(scenario.id)}
+                          sx={{
+                            background: "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)",
+                            boxShadow: "0 3px 5px 2px rgba(33, 203, 243, .3)",
+                            "&:hover": {
+                              background: "linear-gradient(45deg, #1976D2 30%, #1CB5E0 90%)",
+                            },
+                          }}
+                        >
+                          View in AR
+                        </MDButton>
+                      </MDBox>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
             </Card>
           </Grid>
         </Grid>
       </MDBox>
       <Footer />
+      <style>
+        {`
+          .search-input::placeholder {
+            color: rgba(33, 150, 243, 0.7);
+          }
+          .search-input::-webkit-input-placeholder {
+            color: rgba(33, 150, 243, 0.7);
+          }
+          .search-input:-ms-input-placeholder {
+            color: rgba(33, 150, 243, 0.7);
+          }
+        `}
+      </style>
     </DashboardLayout>
   );
 }
