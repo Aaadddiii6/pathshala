@@ -47,8 +47,6 @@ import {
   setWhiteSidenav,
 } from "context";
 
-import LanguageSwitcher from "components/LanguageSwitcher";
-
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
@@ -146,12 +144,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
     <SidenavRoot
       {...rest}
       variant="permanent"
-      ownerState={{
-        transparentSidenav,
-        whiteSidenav,
-        miniSidenav,
-        darkMode,
-      }}
+      ownerState={{ transparentSidenav, whiteSidenav, miniSidenav, darkMode }}
     >
       <MDBox pt={3} pb={1} px={4} textAlign="center">
         <MDBox
@@ -167,16 +160,10 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
             <Icon sx={{ fontWeight: "bold" }}>close</Icon>
           </MDTypography>
         </MDBox>
-        <MDBox
-          component={NavLink}
-          to="/"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <MDBox component="img" src={brand} alt="Brand" width="2rem" />
+        <MDBox component={NavLink} to="/" display="flex" alignItems="center">
+          {brand && <MDBox component="img" src={brand} alt="Brand" width="2rem" />}
           <MDBox
-            width={!miniSidenav && "12rem"}
+            width={!brandName && "100%"}
             sx={(theme) => sidenavLogoLabel(theme, { miniSidenav })}
           >
             <MDTypography component="h6" variant="button" fontWeight="medium" color={textColor}>
@@ -186,18 +173,12 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
         </MDBox>
       </MDBox>
       <Divider
-        light
-        sx={{
-          mt: 0.5,
-          mb: 0.5,
-          background: transparentSidenav ? "none" : "rgba(255, 255, 255, 0.2)",
-        }}
+        light={
+          (!darkMode && !whiteSidenav && !transparentSidenav) ||
+          (darkMode && !transparentSidenav && whiteSidenav)
+        }
       />
       <List>{renderRoutes}</List>
-      <Divider light sx={{ background: "rgba(255, 255, 255, 0.2)" }} />
-      <MDBox p={2}>
-        <LanguageSwitcher />
-      </MDBox>
     </SidenavRoot>
   );
 }

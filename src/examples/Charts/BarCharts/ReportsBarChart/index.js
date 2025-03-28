@@ -48,16 +48,7 @@ function ReportsBarChart({ color, title, description, date, chart }) {
   const { data, options } = configs(chart.labels || [], chart.datasets || {});
 
   return (
-    <Card
-      sx={{
-        height: "100%",
-        background: "linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1))",
-        backdropFilter: "blur(10px)",
-        borderRadius: "15px",
-        border: "1px solid rgba(255, 255, 255, 0.3)",
-        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
-      }}
-    >
+    <Card sx={{ height: "100%" }}>
       <MDBox padding="1rem">
         {useMemo(
           () => (
@@ -77,23 +68,18 @@ function ReportsBarChart({ color, title, description, date, chart }) {
           [color, chart]
         )}
         <MDBox pt={3} pb={1} px={1}>
-          <MDTypography variant="h6" textTransform="capitalize" color="#E6E6FA">
+          <MDTypography variant="h6" textTransform="capitalize">
             {title}
           </MDTypography>
-          <MDTypography component="div" variant="button" color="#E6E6FA" fontWeight="light">
+          <MDTypography component="div" variant="button" color="text" fontWeight="light">
             {description}
           </MDTypography>
-          <Divider sx={{ borderColor: "rgba(255, 255, 255, 0.3)" }} />
+          <Divider />
           <MDBox display="flex" alignItems="center">
-            <MDTypography
-              variant="button"
-              color="#E6E6FA"
-              lineHeight={1}
-              sx={{ mt: 0.15, mr: 0.5 }}
-            >
+            <MDTypography variant="button" color="text" lineHeight={1} sx={{ mt: 0.15, mr: 0.5 }}>
               <Icon>schedule</Icon>
             </MDTypography>
-            <MDTypography variant="button" color="#E6E6FA" fontWeight="light">
+            <MDTypography variant="button" color="text" fontWeight="light">
               {date}
             </MDTypography>
           </MDBox>

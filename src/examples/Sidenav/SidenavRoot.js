@@ -36,62 +36,47 @@ export default styled(Drawer)(({ theme, ownerState }) => {
     backgroundValue = white.main;
   }
 
-  // styles for the sidenav when miniSidenav={false}
   const drawerOpenStyles = () => ({
-    background: backgroundValue,
     transform: "translateX(0)",
-    transition: transitions.create("transform", {
+    width: sidebarWidth,
+    border: "none",
+    borderRight: "none",
+    boxShadow: transparentSidenav ? "none" : xxl,
+    marginBottom: transparentSidenav ? 0 : "inherit",
+    left: 0,
+    right: "auto",
+    transition: transitions.create(["width", "background-color"], {
       easing: transitions.easing.sharp,
-      duration: transitions.duration.shorter,
+      duration: transitions.duration.enteringScreen,
     }),
-
-    [breakpoints.up("xl")]: {
-      boxShadow: transparentSidenav ? "none" : xxl,
-      marginBottom: transparentSidenav ? 0 : "inherit",
-      left: 0,
-      right: "auto",
-      width: sidebarWidth,
-      transform: "translateX(0)",
-      transition: transitions.create(["width", "background-color"], {
-        easing: transitions.easing.sharp,
-        duration: transitions.duration.enteringScreen,
-      }),
-    },
   });
 
-  // styles for the sidenav when miniSidenav={true}
   const drawerCloseStyles = () => ({
-    background: backgroundValue,
-    transform: `translateX(${pxToRem(-320)})`,
-    transition: transitions.create("transform", {
+    transform: "translateX(0)",
+    width: pxToRem(96),
+    overflowX: "hidden",
+    border: "none",
+    borderRight: "none",
+    boxShadow: transparentSidenav ? "none" : xxl,
+    marginBottom: transparentSidenav ? 0 : "inherit",
+    left: 0,
+    right: "auto",
+    transition: transitions.create(["width", "background-color"], {
       easing: transitions.easing.sharp,
       duration: transitions.duration.shorter,
     }),
-
-    [breakpoints.up("xl")]: {
-      boxShadow: transparentSidenav ? "none" : xxl,
-      marginBottom: transparentSidenav ? 0 : "inherit",
-      left: 0,
-      right: "auto",
-      width: pxToRem(96),
-      overflowX: "hidden",
-      transform: "translateX(0)",
-      transition: transitions.create(["width", "background-color"], {
-        easing: transitions.easing.sharp,
-        duration: transitions.duration.shorter,
-      }),
-    },
   });
 
   return {
     "& .MuiDrawer-paper": {
-      boxShadow: xxl,
-      border: "none",
       position: "fixed",
-      top: 0,
-      left: 0,
-      right: "auto",
+      background: backgroundValue,
       height: "100vh",
+      margin: 0,
+      padding: 0,
+      border: "none",
+      borderRight: "none",
+      boxSizing: "border-box",
       ...(miniSidenav ? drawerCloseStyles() : drawerOpenStyles()),
     },
   };

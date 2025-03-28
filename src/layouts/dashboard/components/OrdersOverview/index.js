@@ -26,27 +26,18 @@ import TimelineItem from "examples/Timeline/TimelineItem";
 
 function OrdersOverview() {
   return (
-    <Card
-      sx={{
-        height: "100%",
-        background: "linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1))",
-        backdropFilter: "blur(10px)",
-        borderRadius: "15px",
-        border: "1px solid rgba(255, 255, 255, 0.3)",
-        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
-      }}
-    >
+    <Card sx={{ height: "100%" }}>
       <MDBox pt={3} px={3}>
-        <MDTypography variant="h6" fontWeight="medium" color="#E6E6FA">
+        <MDTypography variant="h6" fontWeight="medium">
           Learning Activities
         </MDTypography>
         <MDBox mt={0} mb={2}>
-          <MDTypography variant="button" color="#E6E6FA" fontWeight="regular">
+          <MDTypography variant="button" color="text" fontWeight="regular">
             <MDTypography display="inline" variant="body2" verticalAlign="middle">
               <Icon sx={{ color: ({ palette: { success } }) => success.main }}>arrow_upward</Icon>
             </MDTypography>
             &nbsp;
-            <MDTypography variant="button" color="#E6E6FA" fontWeight="medium">
+            <MDTypography variant="button" color="text" fontWeight="medium">
               35%
             </MDTypography>{" "}
             more activities this month

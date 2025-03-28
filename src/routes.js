@@ -47,7 +47,6 @@ import TeacherSignIn from "layouts/authentication/teacher-sign-in";
 import TeacherSignUp from "layouts/authentication/teacher-sign-up";
 import AdminSignIn from "layouts/authentication/admin";
 import TeacherConsultants from "layouts/teacher-consultants";
-import Test from "layouts/test";
 import Quiz from "layouts/quiz";
 import MathematicsQuiz from "layouts/quiz/mathematics";
 import PhysicsQuiz from "layouts/quiz/physics";
@@ -55,6 +54,7 @@ import ChemistryQuiz from "layouts/quiz/chemistry";
 import BiologyQuiz from "layouts/quiz/biology";
 import ComputerScienceQuiz from "layouts/quiz/computer-science";
 import EnglishQuiz from "layouts/quiz/english";
+import ARLearning from "layouts/ar-learning";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -113,6 +113,14 @@ const routes = [
   },
   {
     type: "collapse",
+    name: "AR Learning",
+    key: "ar-learning",
+    icon: <Icon fontSize="small">view_in_ar</Icon>,
+    route: "/ar-learning",
+    component: <ARLearning />,
+  },
+  {
+    type: "collapse",
     name: "Teacher Consultants",
     key: "teacher-consultants",
     icon: <Icon fontSize="small">people</Icon>,
@@ -126,14 +134,6 @@ const routes = [
     icon: <Icon fontSize="small">chat</Icon>,
     route: "/chatbot",
     component: <Billing />,
-  },
-  {
-    type: "collapse",
-    name: "Test",
-    key: "test",
-    icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/test",
-    component: <Test />,
   },
   {
     type: "collapse",

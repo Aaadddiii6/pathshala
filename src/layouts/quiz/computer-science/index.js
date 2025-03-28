@@ -1,208 +1,37 @@
-import { useState } from "react";
-import Grid from "@mui/material/Grid";
+import React from "react";
 import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-
-const questions = [
-  {
-    question: "What is the binary number system?",
-    options: [
-      "Base-2 number system",
-      "Base-10 number system",
-      "Base-16 number system",
-      "Base-8 number system",
-    ],
-    correctAnswer: 0,
-  },
-  {
-    question: "What is the smallest unit of data in a computer?",
-    options: ["Bit", "Byte", "Nibble", "Word"],
-    correctAnswer: 0,
-  },
-  {
-    question: "What is the main function of an operating system?",
-    options: [
-      "Manage hardware and software resources",
-      "Play games",
-      "Browse the internet",
-      "Create documents",
-    ],
-    correctAnswer: 0,
-  },
-  {
-    question: "What is the process of finding and fixing errors in code called?",
-    options: ["Debugging", "Coding", "Compiling", "Running"],
-    correctAnswer: 0,
-  },
-  {
-    question: "What is the name of the first computer programmer?",
-    options: ["Ada Lovelace", "Charles Babbage", "Alan Turing", "John von Neumann"],
-    correctAnswer: 0,
-  },
-  {
-    question: "What is the process of converting source code to machine code called?",
-    options: ["Compilation", "Interpretation", "Execution", "Debugging"],
-    correctAnswer: 0,
-  },
-  {
-    question: "What is the main function of a CPU?",
-    options: ["Process instructions", "Store data", "Display output", "Input data"],
-    correctAnswer: 0,
-  },
-  {
-    question: "What is the name of the first electronic computer?",
-    options: ["ENIAC", "UNIVAC", "IBM 701", "Apple I"],
-    correctAnswer: 0,
-  },
-  {
-    question: "What is the process of organizing data in a database called?",
-    options: ["Data modeling", "Data entry", "Data deletion", "Data copying"],
-    correctAnswer: 0,
-  },
-  {
-    question: "What is the name of the first programming language?",
-    options: ["FORTRAN", "COBOL", "BASIC", "Pascal"],
-    correctAnswer: 0,
-  },
-];
+import Grid from "@mui/material/Grid";
 
 function ComputerScienceQuiz() {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [showResult, setShowResult] = useState(false);
-  const [score, setScore] = useState(0);
-
-  const handleAnswerSelect = (optionIndex) => {
-    setSelectedAnswer(optionIndex);
-    setShowResult(true);
-
-    if (optionIndex === questions[currentQuestion].correctAnswer) {
-      setScore(score + 1);
-    }
-  };
-
-  const handleNextQuestion = () => {
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-      setSelectedAnswer(null);
-      setShowResult(false);
-    }
-  };
-
-  const getOptionStyle = (optionIndex) => {
-    if (!showResult) return {};
-
-    if (optionIndex === questions[currentQuestion].correctAnswer) {
-      return { backgroundColor: "rgba(76, 175, 80, 0.2)" };
-    }
-
-    if (
-      optionIndex === selectedAnswer &&
-      optionIndex !== questions[currentQuestion].correctAnswer
-    ) {
-      return { backgroundColor: "rgba(244, 67, 54, 0.2)" };
-    }
-
-    return {};
-  };
-
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox
-        py={2}
-        sx={{
-          background: "transparent",
-          px: { xs: 1, sm: 2, md: 3 },
-        }}
-      >
-        <Grid container spacing={3}>
+      <MDBox pt={6} pb={3}>
+        <Grid container spacing={6}>
           <Grid item xs={12}>
-            <Card
-              sx={{
-                background:
-                  "linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1))",
-                backdropFilter: "blur(10px)",
-                borderRadius: "15px",
-                border: "1px solid rgba(255, 255, 255, 0.3)",
-                boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
-              }}
-            >
-              <CardContent>
-                <MDTypography variant="h4" color="#E6E6FA" mb={3}>
+            <Card>
+              <MDBox
+                mx={2}
+                mt={-3}
+                py={3}
+                px={2}
+                variant="gradient"
+                bgColor="info"
+                borderRadius="lg"
+                coloredShadow="info"
+              >
+                <MDTypography variant="h6" color="white">
                   Computer Science Quiz
                 </MDTypography>
-
-                <MDTypography variant="h6" color="#E6E6FA" mb={2}>
-                  Question {currentQuestion + 1} of {questions.length}
-                </MDTypography>
-
-                <MDTypography variant="h5" color="#E6E6FA" mb={4}>
-                  {questions[currentQuestion].question}
-                </MDTypography>
-
-                <Grid container spacing={2}>
-                  {questions[currentQuestion].options.map((option, index) => (
-                    <Grid item xs={12} key={index}>
-                      <Button
-                        variant="outlined"
-                        fullWidth
-                        onClick={() => handleAnswerSelect(index)}
-                        disabled={showResult}
-                        sx={{
-                          color: "#E6E6FA",
-                          borderColor: "rgba(255, 255, 255, 0.3)",
-                          backgroundColor: "rgba(255, 255, 255, 0.1)",
-                          ...getOptionStyle(index),
-                          "&:hover": {
-                            borderColor: "rgba(255, 255, 255, 0.5)",
-                            backgroundColor: "rgba(255, 255, 255, 0.2)",
-                          },
-                          "&.Mui-disabled": {
-                            backgroundColor: "rgba(255, 255, 255, 0.05)",
-                          },
-                        }}
-                      >
-                        {option}
-                      </Button>
-                    </Grid>
-                  ))}
-                </Grid>
-
-                {showResult && (
-                  <MDBox mt={3} display="flex" justifyContent="flex-end">
-                    <Button
-                      variant="contained"
-                      onClick={handleNextQuestion}
-                      sx={{
-                        background: "linear-gradient(135deg, #4B79A1, #283E51)",
-                        color: "#FFFFFF",
-                        padding: "10px 20px",
-                        fontSize: "1rem",
-                        "&:hover": {
-                          background: "linear-gradient(135deg, #5B89B1, #384E61)",
-                        },
-                      }}
-                    >
-                      {currentQuestion === questions.length - 1 ? "Finish Quiz" : "Next Question"}
-                    </Button>
-                  </MDBox>
-                )}
-
-                {currentQuestion === questions.length - 1 && showResult && (
-                  <MDBox mt={3}>
-                    <MDTypography variant="h5" color="#E6E6FA">
-                      Quiz Complete! Your score: {score} out of {questions.length}
-                    </MDTypography>
-                  </MDBox>
-                )}
-              </CardContent>
+              </MDBox>
+              <MDBox pt={3} px={3}>
+                {/* Quiz content will go here */}
+              </MDBox>
             </Card>
           </Grid>
         </Grid>

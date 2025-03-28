@@ -45,14 +45,9 @@ function Timer({ onStop }) {
       zIndex={1000}
     >
       <MDBox display="flex" alignItems="center" gap={2}>
-        <MDBox>
-          <MDTypography variant="h6" color="white" gutterBottom>
-            Study Time
-          </MDTypography>
-          <MDTypography variant="h4" color="white" fontWeight="bold">
-            {formatTime(time)}
-          </MDTypography>
-        </MDBox>
+        <MDTypography variant="h6" color="white">
+          Study Time: {formatTime(time)}
+        </MDTypography>
         <MDButton
           variant="gradient"
           color="error"

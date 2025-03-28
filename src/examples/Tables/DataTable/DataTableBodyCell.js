@@ -28,13 +28,13 @@ function DataTableBodyCell({ noBorder, align, children }) {
       px={3}
       sx={({ palette: { light }, typography: { size }, borders: { borderWidth } }) => ({
         fontSize: size.sm,
-        borderBottom: noBorder ? "none" : `${borderWidth[1]} solid rgba(255, 255, 255, 0.3)`,
+        borderBottom: noBorder ? "none" : `${borderWidth[1]} solid ${light.main}`,
       })}
     >
       <MDBox
         display="inline-block"
         width="max-content"
-        color="#E6E6FA"
+        color="text"
         sx={{ verticalAlign: "middle" }}
       >
         {children}

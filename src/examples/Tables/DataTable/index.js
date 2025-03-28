@@ -162,7 +162,7 @@ function DataTable({
                 sx={{ width: "5rem" }}
                 renderInput={(params) => <MDInput {...params} />}
               />
-              <MDTypography variant="caption" color="#E6E6FA">
+              <MDTypography variant="caption" color="secondary">
                 &nbsp;&nbsp;entries per page
               </MDTypography>
             </MDBox>
@@ -231,7 +231,7 @@ function DataTable({
       >
         {showTotalEntries && (
           <MDBox mb={{ xs: 3, sm: 0 }}>
-            <MDTypography variant="button" color="#E6E6FA" fontWeight="regular">
+            <MDTypography variant="button" color="secondary" fontWeight="regular">
               Showing {entriesStart} to {entriesEnd} of {rows.length} entries
             </MDTypography>
           </MDBox>

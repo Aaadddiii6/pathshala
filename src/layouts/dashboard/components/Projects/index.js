@@ -42,10 +42,10 @@ function Projects() {
   const Author = ({ image, name, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDBox ml={2} lineHeight={1}>
-        <MDTypography display="block" variant="button" fontWeight="medium" color="#00BFFF">
+        <MDTypography display="block" variant="button" fontWeight="medium" color="#FFFFFF">
           {name}
         </MDTypography>
-        <MDTypography variant="caption" color="#00BFFF">
+        <MDTypography variant="caption" color="#FFFFFF">
           {email}
         </MDTypography>
       </MDBox>
@@ -64,10 +64,10 @@ function Projects() {
 
   const Job = ({ title, description }) => (
     <MDBox lineHeight={1} textAlign="left">
-      <MDTypography display="block" variant="caption" color="#00BFFF" fontWeight="medium">
+      <MDTypography display="block" variant="caption" color="#FFFFFF" fontWeight="medium">
         {title}
       </MDTypography>
-      <MDTypography variant="caption" color="#00BFFF">
+      <MDTypography variant="caption" color="#FFFFFF">
         {description}
       </MDTypography>
     </MDBox>
@@ -78,11 +78,45 @@ function Projects() {
     description: PropTypes.string.isRequired,
   };
 
+  const renderAuthors = (authors) => (
+    <MDBox display="flex" alignItems="center" gap={1}>
+      {authors.map((author, index) => (
+        <MDBox key={index} display="flex" alignItems="center">
+          <MDBox
+            component="img"
+            src={author.image}
+            alt={author.name}
+            width="24px"
+            height="24px"
+            borderRadius="50%"
+            mr={1}
+          />
+          <MDTypography variant="button" color="white" fontWeight="medium">
+            {author.name}
+          </MDTypography>
+          {index < authors.length - 1 && (
+            <MDTypography variant="button" color="white" mx={1}>
+              and
+            </MDTypography>
+          )}
+        </MDBox>
+      ))}
+    </MDBox>
+  );
+
+  const renderJob = (job) => (
+    <MDBox display="flex" alignItems="center" gap={1}>
+      <MDTypography variant="button" color="white" fontWeight="medium">
+        {job}
+      </MDTypography>
+    </MDBox>
+  );
+
   return (
     <Card
       sx={{
         height: "100%",
-        background: "linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1))",
+        background: "linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5))",
         backdropFilter: "blur(10px)",
         borderRadius: "15px",
         border: "1px solid rgba(255, 255, 255, 0.3)",
@@ -91,7 +125,7 @@ function Projects() {
     >
       <MDBox p={2}>
         <MDBox display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-          <MDTypography variant="h6" fontWeight="bold" color="#00BFFF">
+          <MDTypography variant="h6" fontWeight="bold" color="#FFFFFF">
             AR/VR Learning Experiences
           </MDTypography>
           <MDButton variant="outlined" color="info" size="small">
@@ -114,7 +148,7 @@ function Projects() {
                   completion: (
                     <MDBox width="8rem" textAlign="left">
                       <MDProgress value={95} color="info" variant="gradient" label={false} />
-                      <MDTypography variant="caption" color="#00BFFF" fontWeight="medium">
+                      <MDTypography variant="caption" color="#FFFFFF" fontWeight="medium">
                         95%
                       </MDTypography>
                     </MDBox>
@@ -124,7 +158,7 @@ function Projects() {
                       component="a"
                       href="#"
                       variant="caption"
-                      color="#00FF00"
+                      color="#FFFFFF"
                       fontWeight="medium"
                     >
                       Completed
@@ -137,7 +171,7 @@ function Projects() {
                   completion: (
                     <MDBox width="8rem" textAlign="left">
                       <MDProgress value={85} color="info" variant="gradient" label={false} />
-                      <MDTypography variant="caption" color="#00BFFF" fontWeight="medium">
+                      <MDTypography variant="caption" color="#FFFFFF" fontWeight="medium">
                         85%
                       </MDTypography>
                     </MDBox>
@@ -147,7 +181,7 @@ function Projects() {
                       component="a"
                       href="#"
                       variant="caption"
-                      color="#00FF00"
+                      color="#FFFFFF"
                       fontWeight="medium"
                     >
                       In Progress
@@ -160,7 +194,7 @@ function Projects() {
                   completion: (
                     <MDBox width="8rem" textAlign="left">
                       <MDProgress value={100} color="info" variant="gradient" label={false} />
-                      <MDTypography variant="caption" color="#00BFFF" fontWeight="medium">
+                      <MDTypography variant="caption" color="#FFFFFF" fontWeight="medium">
                         100%
                       </MDTypography>
                     </MDBox>
@@ -170,7 +204,7 @@ function Projects() {
                       component="a"
                       href="#"
                       variant="caption"
-                      color="#00FF00"
+                      color="#FFFFFF"
                       fontWeight="medium"
                     >
                       Completed
@@ -183,7 +217,7 @@ function Projects() {
                   completion: (
                     <MDBox width="8rem" textAlign="left">
                       <MDProgress value={75} color="info" variant="gradient" label={false} />
-                      <MDTypography variant="caption" color="#00BFFF" fontWeight="medium">
+                      <MDTypography variant="caption" color="#FFFFFF" fontWeight="medium">
                         75%
                       </MDTypography>
                     </MDBox>
@@ -193,7 +227,7 @@ function Projects() {
                       component="a"
                       href="#"
                       variant="caption"
-                      color="#00FF00"
+                      color="#FFFFFF"
                       fontWeight="medium"
                     >
                       In Progress
@@ -206,7 +240,7 @@ function Projects() {
                   completion: (
                     <MDBox width="8rem" textAlign="left">
                       <MDProgress value={90} color="info" variant="gradient" label={false} />
-                      <MDTypography variant="caption" color="#00BFFF" fontWeight="medium">
+                      <MDTypography variant="caption" color="#FFFFFF" fontWeight="medium">
                         90%
                       </MDTypography>
                     </MDBox>
@@ -216,7 +250,7 @@ function Projects() {
                       component="a"
                       href="#"
                       variant="caption"
-                      color="#00FF00"
+                      color="#FFFFFF"
                       fontWeight="medium"
                     >
                       Completed
@@ -229,7 +263,7 @@ function Projects() {
                   completion: (
                     <MDBox width="8rem" textAlign="left">
                       <MDProgress value={60} color="info" variant="gradient" label={false} />
-                      <MDTypography variant="caption" color="#00BFFF" fontWeight="medium">
+                      <MDTypography variant="caption" color="#FFFFFF" fontWeight="medium">
                         60%
                       </MDTypography>
                     </MDBox>
@@ -239,7 +273,7 @@ function Projects() {
                       component="a"
                       href="#"
                       variant="caption"
-                      color="#00FF00"
+                      color="#FFFFFF"
                       fontWeight="medium"
                     >
                       In Progress
@@ -251,19 +285,19 @@ function Projects() {
             showTotalEntries={false}
             entriesPerPage={false}
             tableHead={{
-              color: "#00BFFF",
+              color: "#FFFFFF",
               fontWeight: "bold",
               fontSize: "1rem",
               textTransform: "uppercase",
               opacity: 1,
             }}
             tableBody={{
-              color: "#00BFFF",
+              color: "#FFFFFF",
               fontWeight: "medium",
               opacity: 1,
             }}
             tablePagination={{
-              color: "#00BFFF",
+              color: "#FFFFFF",
             }}
             isSorted={false}
             noEndBorder
