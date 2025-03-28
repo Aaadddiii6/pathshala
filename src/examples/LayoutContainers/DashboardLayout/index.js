@@ -33,8 +33,18 @@ function DashboardLayout({ children }) {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    setLayout(dispatch, "dashboard");
+    // Check if we're on an authentication page
+    const isAuthPage = pathname.startsWith("/authentication");
+
+    if (!isAuthPage) {
+      setLayout(dispatch, "dashboard");
+    }
   }, [pathname]);
+
+  // Don't render the dashboard layout on authentication pages
+  if (pathname.startsWith("/authentication")) {
+    return children;
+  }
 
   return (
     <MDBox

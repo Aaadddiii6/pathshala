@@ -188,6 +188,8 @@ function Billing() {
                   borderColor="divider"
                   sx={{
                     background: "linear-gradient(45deg, #f3f4f6 30%, #e5e7eb 90%)",
+                    maxHeight: { xs: "120px", sm: "auto" },
+                    overflowY: "auto",
                   }}
                 >
                   <MDTypography variant="body2" color="text" mb={1} fontWeight="medium">
@@ -219,6 +221,8 @@ function Billing() {
                   borderColor="divider"
                   sx={{
                     background: "linear-gradient(45deg, #f8fafc 30%, #f1f5f9 90%)",
+                    maxHeight: { xs: "120px", sm: "auto" },
+                    overflowY: "auto",
                   }}
                 >
                   <MDTypography variant="body2" color="text" mb={1} fontWeight="medium">
@@ -239,6 +243,8 @@ function Billing() {
                           "&:hover": {
                             background: "linear-gradient(45deg, #4338ca 30%, #6366f1 90%)",
                           },
+                          fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                          padding: { xs: "4px 8px", sm: "6px 12px" },
                         }}
                       >
                         {action.label}
@@ -256,42 +262,44 @@ function Billing() {
                     display: "flex",
                     flexDirection: "column",
                     gap: 2,
-                    background: "linear-gradient(45deg, #ffffff 30%, #f9fafb 90%)",
                   }}
                 >
-                  {messages.map((message, index) => (
+                  {messages.map((msg, index) => (
                     <MDBox
                       key={index}
                       sx={{
                         display: "flex",
-                        justifyContent: message.type === "user" ? "flex-end" : "flex-start",
+                        justifyContent: msg.type === "user" ? "flex-end" : "flex-start",
+                        width: "100%",
                       }}
                     >
                       <MDBox
                         sx={{
-                          maxWidth: "70%",
+                          maxWidth: "80%",
                           p: 2,
                           borderRadius: 2,
-                          background:
-                            message.type === "user"
-                              ? "linear-gradient(45deg, #4f46e5 30%, #818cf8 90%)"
-                              : "linear-gradient(45deg, #f3f4f6 30%, #e5e7eb 90%)",
-                          color: message.type === "user" ? "white" : "text.primary",
-                          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                          backgroundColor: msg.type === "user" ? "primary.main" : "grey.100",
+                          color: msg.type === "user" ? "white" : "text.primary",
                         }}
                       >
-                        <MDTypography variant="body2">{message.content}</MDTypography>
+                        <MDTypography variant="body2">{msg.content}</MDTypography>
                       </MDBox>
                     </MDBox>
                   ))}
                   {isLoading && (
-                    <MDBox sx={{ display: "flex", justifyContent: "flex-start" }}>
+                    <MDBox
+                      sx={{
+                        display: "flex",
+                        justifyContent: "flex-start",
+                        width: "100%",
+                      }}
+                    >
                       <MDBox
                         sx={{
+                          maxWidth: "80%",
                           p: 2,
                           borderRadius: 2,
-                          background: "linear-gradient(45deg, #f3f4f6 30%, #e5e7eb 90%)",
-                          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                          backgroundColor: "grey.100",
                         }}
                       >
                         <MDTypography variant="body2">Thinking...</MDTypography>
@@ -307,46 +315,37 @@ function Billing() {
                   borderTop="1px solid"
                   borderColor="divider"
                   sx={{
-                    display: "flex",
-                    gap: 1,
-                    background: "linear-gradient(45deg, #f8fafc 30%, #f1f5f9 90%)",
+                    background: "white",
                   }}
                 >
-                  <TextField
-                    fullWidth
-                    multiline
-                    maxRows={4}
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    placeholder="Ask me anything about your studies..."
-                    variant="outlined"
-                    size="small"
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "&:hover fieldset": {
-                          borderColor: "primary.main",
+                  <MDBox display="flex" gap={1}>
+                    <MDInput
+                      fullWidth
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                      placeholder="Type your message..."
+                      sx={{
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: 2,
                         },
-                      },
-                    }}
-                  />
-                  <IconButton
-                    color="primary"
-                    onClick={handleSendMessage}
-                    disabled={isLoading || !message.trim()}
-                    sx={{
-                      background: "linear-gradient(45deg, #4f46e5 30%, #818cf8 90%)",
-                      color: "white",
-                      "&:hover": {
-                        background: "linear-gradient(45deg, #4338ca 30%, #6366f1 90%)",
-                      },
-                      "&.Mui-disabled": {
-                        background: "grey.300",
-                      },
-                    }}
-                  >
-                    <SendIcon />
-                  </IconButton>
+                      }}
+                    />
+                    <IconButton
+                      color="primary"
+                      onClick={handleSendMessage}
+                      disabled={!message.trim() || isLoading}
+                      sx={{
+                        backgroundColor: "primary.main",
+                        color: "white",
+                        "&:hover": {
+                          backgroundColor: "primary.dark",
+                        },
+                      }}
+                    >
+                      <SendIcon />
+                    </IconButton>
+                  </MDBox>
                 </MDBox>
               </MDBox>
             </Card>

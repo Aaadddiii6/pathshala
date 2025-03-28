@@ -25,7 +25,13 @@ import PropTypes from "prop-types";
 import MDBox from "components/MDBox";
 
 // Material Dashboard 2 React context
-import { useMaterialUIController, setLayout, setMiniSidenav, setTransparentSidenav } from "context";
+import {
+  useMaterialUIController,
+  setLayout,
+  setMiniSidenav,
+  setTransparentSidenav,
+  setWhiteSidenav,
+} from "context";
 
 function PageLayout({ background, children }) {
   const [controller, dispatch] = useMaterialUIController();
@@ -36,10 +42,16 @@ function PageLayout({ background, children }) {
     const isAuthPage = pathname.startsWith("/authentication");
     setLayout(dispatch, isAuthPage ? "page" : "dashboard");
 
-    // Hide sidenav on authentication pages
+    // Reset sidenav styles on authentication pages
     if (isAuthPage) {
       setMiniSidenav(dispatch, true);
       setTransparentSidenav(dispatch, true);
+      setWhiteSidenav(dispatch, true);
+    } else {
+      // Reset to default styles for dashboard
+      setMiniSidenav(dispatch, false);
+      setTransparentSidenav(dispatch, false);
+      setWhiteSidenav(dispatch, false);
     }
   }, [pathname, dispatch]);
 
@@ -49,7 +61,10 @@ function PageLayout({ background, children }) {
       height="100%"
       minHeight="100vh"
       bgColor={background}
-      sx={{ overflowX: "hidden" }}
+      sx={{
+        overflowX: "hidden",
+        marginLeft: pathname.startsWith("/authentication") ? "0" : "auto",
+      }}
     >
       {children}
     </MDBox>

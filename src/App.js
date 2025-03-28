@@ -204,11 +204,7 @@ export default function App() {
                     padding: "8px",
                   },
                   [breakpoints.down("md")]: {
-                    marginLeft: !pathname.includes("/authentication")
-                      ? miniSidenav
-                        ? "0"
-                        : "0"
-                      : "0",
+                    marginLeft: "0",
                     padding: "12px",
                   },
                 })}
@@ -267,11 +263,7 @@ export default function App() {
                   padding: "8px",
                 },
                 [breakpoints.down("md")]: {
-                  marginLeft: !pathname.includes("/authentication")
-                    ? miniSidenav
-                      ? "0"
-                      : "0"
-                    : "0",
+                  marginLeft: "0",
                   padding: "12px",
                 },
               })}

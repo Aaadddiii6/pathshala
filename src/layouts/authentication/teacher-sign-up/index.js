@@ -1,5 +1,5 @@
 // react-router-dom components
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React from "react";
 
 // @mui material components
@@ -19,6 +19,14 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 import bgImage from "assets/images/background2.avif";
 
 function TeacherSignUp() {
+  const navigate = useNavigate();
+
+  const handleSignUp = () => {
+    // Here you would typically validate the form data
+    // For now, we'll just redirect to the teacher dashboard
+    navigate("/teacher-dashboard");
+  };
+
   return (
     <CoverLayout
       title="Welcome to EduTech"
@@ -110,12 +118,7 @@ function TeacherSignUp() {
               </MDTypography>
             </MDBox>
             <MDBox mt={3} mb={1}>
-              <MDButton
-                variant="gradient"
-                color="info"
-                fullWidth
-                onClick={() => (window.location.href = "/dashboard")}
-              >
+              <MDButton variant="gradient" color="info" fullWidth onClick={handleSignUp}>
                 Sign Up
               </MDButton>
             </MDBox>

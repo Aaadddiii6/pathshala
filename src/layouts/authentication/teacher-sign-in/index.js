@@ -1,5 +1,5 @@
 // react-router-dom components
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React from "react";
 
 // @mui material components
@@ -19,6 +19,14 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 import bgImage from "assets/images/background2.avif";
 
 function TeacherSignIn() {
+  const navigate = useNavigate();
+
+  const handleSignIn = () => {
+    // Here you would typically validate credentials
+    // For now, we'll just redirect to the teacher dashboard
+    navigate("/teacher-dashboard");
+  };
+
   return (
     <CoverLayout
       title="Welcome Back"
@@ -75,12 +83,7 @@ function TeacherSignIn() {
               </MDTypography>
             </MDBox>
             <MDBox mt={3} mb={1}>
-              <MDButton
-                variant="gradient"
-                color="info"
-                fullWidth
-                onClick={() => (window.location.href = "/dashboard")}
-              >
+              <MDButton variant="gradient" color="info" fullWidth onClick={handleSignIn}>
                 Sign In
               </MDButton>
             </MDBox>
