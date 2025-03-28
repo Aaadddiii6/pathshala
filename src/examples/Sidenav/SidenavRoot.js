@@ -21,7 +21,7 @@ export default styled(Drawer)(({ theme, ownerState }) => {
   const { palette, boxShadows, transitions, breakpoints, functions } = theme;
   const { transparentSidenav, whiteSidenav, miniSidenav, darkMode } = ownerState;
 
-  const sidebarWidth = 250;
+  const sidebarWidth = 220;
   const { transparent, gradients, white, background } = palette;
   const { xxl } = boxShadows;
   const { pxToRem, linearGradient } = functions;
@@ -71,13 +71,21 @@ export default styled(Drawer)(({ theme, ownerState }) => {
     "& .MuiDrawer-paper": {
       position: "fixed",
       background: backgroundValue,
-      height: "100vh",
-      margin: 0,
+      height: "calc(100vh - 32px)",
+      margin: "16px 0",
       padding: 0,
       border: "none",
       borderRight: "none",
       boxSizing: "border-box",
+      borderRadius: "0 16px 16px 0",
       ...(miniSidenav ? drawerCloseStyles() : drawerOpenStyles()),
+
+      [breakpoints.down("xl")]: {
+        height: "100vh",
+        margin: 0,
+        boxShadow: "none",
+        borderRadius: 0,
+      },
     },
   };
 });

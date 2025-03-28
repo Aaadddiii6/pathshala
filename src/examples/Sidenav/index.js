@@ -66,9 +66,11 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   useEffect(() => {
     // A function that sets the mini state of the sidenav.
     function handleMiniSidenav() {
-      setMiniSidenav(dispatch, window.innerWidth < 1200);
-      setTransparentSidenav(dispatch, window.innerWidth < 1200 ? false : transparentSidenav);
-      setWhiteSidenav(dispatch, window.innerWidth < 1200 ? false : whiteSidenav);
+      const isMobile = window.innerWidth < 1200;
+      // On mobile, we want the sidenav to be closed by default
+      setMiniSidenav(dispatch, isMobile);
+      setTransparentSidenav(dispatch, isMobile ? false : transparentSidenav);
+      setWhiteSidenav(dispatch, isMobile ? false : whiteSidenav);
     }
 
     /** 
@@ -143,7 +145,9 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   return (
     <SidenavRoot
       {...rest}
-      variant="permanent"
+      variant={window.innerWidth >= 1200 ? "permanent" : "temporary"}
+      open={window.innerWidth >= 1200 ? !miniSidenav : !miniSidenav}
+      onClose={closeSidenav}
       ownerState={{ transparentSidenav, whiteSidenav, miniSidenav, darkMode }}
     >
       <MDBox pt={3} pb={1} px={4} textAlign="center">

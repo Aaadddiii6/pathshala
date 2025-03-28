@@ -25,15 +25,23 @@ import PropTypes from "prop-types";
 import MDBox from "components/MDBox";
 
 // Material Dashboard 2 React context
-import { useMaterialUIController, setLayout } from "context";
+import { useMaterialUIController, setLayout, setMiniSidenav, setTransparentSidenav } from "context";
 
 function PageLayout({ background, children }) {
-  const [, dispatch] = useMaterialUIController();
+  const [controller, dispatch] = useMaterialUIController();
   const { pathname } = useLocation();
 
   useEffect(() => {
-    setLayout(dispatch, "page");
-  }, [pathname]);
+    // Check if we're on an authentication page
+    const isAuthPage = pathname.startsWith("/authentication");
+    setLayout(dispatch, isAuthPage ? "page" : "dashboard");
+
+    // Hide sidenav on authentication pages
+    if (isAuthPage) {
+      setMiniSidenav(dispatch, true);
+      setTransparentSidenav(dispatch, true);
+    }
+  }, [pathname, dispatch]);
 
   return (
     <MDBox
