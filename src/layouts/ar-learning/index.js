@@ -354,26 +354,25 @@ function ARLearning() {
                         <Button
                           variant="contained"
                           color="primary"
-                          fullWidth
-                          onClick={() => handleARView(scenario.id)}
-                          disabled={!isARSupported && isMobile}
+                          onClick={() => navigate(`/ar-view/${scenario.id}`)}
                           sx={{
-                            background: "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)",
-                            boxShadow: "0 3px 5px 2px rgba(33, 203, 243, .3)",
+                            backgroundColor: "rgba(33, 150, 243, 0.9)",
                             "&:hover": {
-                              background: "linear-gradient(45deg, #1976D2 30%, #1CB5E0 90%)",
+                              backgroundColor: "rgba(33, 150, 243, 1)",
                             },
-                            "&.Mui-disabled": {
-                              background: "rgba(33, 150, 243, 0.5)",
-                              cursor: "not-allowed",
-                            },
+                            color: "white",
+                            textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
+                            boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                            borderRadius: "8px",
+                            padding: "8px 16px",
+                            fontSize: "0.875rem",
+                            fontWeight: 500,
+                            textTransform: "none",
+                            width: "100%",
+                            marginTop: "8px",
                           }}
                         >
-                          {isARSupported
-                            ? "View in AR"
-                            : isMobile
-                            ? "AR Not Supported on this Device"
-                            : "View 3D Model"}
+                          {isARSupported ? "View in AR" : "View 3D Model"}
                         </Button>
                       </MDBox>
                     </Card>

@@ -179,7 +179,7 @@ export default function App() {
                 minHeight: "100vh",
               }}
             >
-              {!pathname.includes("/authentication") && (
+              {!pathname.includes("/authentication") && pathname !== "/" && (
                 <Sidenav
                   color={sidenavColor}
                   brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
@@ -239,7 +239,7 @@ export default function App() {
               minHeight: "100vh",
             }}
           >
-            {!pathname.includes("/authentication") && (
+            {!pathname.includes("/authentication") && pathname !== "/" && (
               <Sidenav
                 color={sidenavColor}
                 brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}

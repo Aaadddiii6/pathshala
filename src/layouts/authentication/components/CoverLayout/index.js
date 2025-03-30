@@ -66,6 +66,12 @@ function CoverLayout({ color, header, title, description, image, top, children }
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 0,
         }}
       />
       <MDBox
@@ -74,6 +80,12 @@ function CoverLayout({ color, header, title, description, image, top, children }
         minHeight="100vh"
         sx={{
           backgroundColor: ({ palette: { black }, functions: { rgba } }) => rgba(black.main, 0.4),
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 1,
         }}
       />
       <MDBox position="absolute" top={20} right={20} zIndex={3}>
@@ -133,6 +145,13 @@ function CoverLayout({ color, header, title, description, image, top, children }
         minHeight="100vh"
         position="relative"
         zIndex={2}
+        sx={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }}
       >
         <Grid container spacing={1} justifyContent="center">
           <Grid item xs={11} sm={9} md={7} lg={6} xl={5}>

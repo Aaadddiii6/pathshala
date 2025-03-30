@@ -204,6 +204,41 @@ function ARView() {
             </Typography>
           )}
         </Box>
+
+        <Typography
+          variant="h4"
+          sx={{
+            marginBottom: "20px",
+            textAlign: "center",
+            color: "#2196F3",
+            textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
+          }}
+        >
+          {title}
+        </Typography>
+
+        {!isARSupported && (
+          <Box
+            sx={{
+              backgroundColor: "rgba(33, 150, 243, 0.2)",
+              padding: "15px",
+              borderRadius: "8px",
+              marginBottom: "20px",
+              maxWidth: "400px",
+            }}
+          >
+            <Typography variant="body1" sx={{ color: "#fff", textAlign: "center" }}>
+              You&apos;re viewing this on a device that doesn&apos;t support AR. You can still
+              interact with the 3D model using your mouse:
+            </Typography>
+            <Typography variant="body2" sx={{ color: "#fff", mt: 1 }}>
+              • Left click + drag to rotate
+              <br />
+              • Right click + drag to pan
+              <br />• Scroll to zoom
+            </Typography>
+          </Box>
+        )}
       </Box>
     </DashboardLayout>
   );

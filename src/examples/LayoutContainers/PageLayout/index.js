@@ -33,6 +33,9 @@ import {
   setWhiteSidenav,
 } from "context";
 
+// Images
+import bgImage from "assets/images/background2.avif";
+
 function PageLayout({ background, children }) {
   const [controller, dispatch] = useMaterialUIController();
   const { pathname } = useLocation();
@@ -64,6 +67,11 @@ function PageLayout({ background, children }) {
       sx={{
         overflowX: "hidden",
         marginLeft: pathname.startsWith("/authentication") ? "0" : "auto",
+        position: "relative",
+        backgroundImage: pathname.startsWith("/authentication") ? "none" : `url(${bgImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
       }}
     >
       {children}
