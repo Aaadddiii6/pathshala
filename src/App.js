@@ -54,6 +54,7 @@ import { AuthProvider } from "context/auth";
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
 import bgImage from "assets/images/v960-ning-05.jpg";
+import ARView from "layouts/ar-view";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -218,6 +219,7 @@ export default function App() {
                 {layout === "vr" && <Configurator />}
                 <Routes>
                   {getRoutes(routes)}
+                  <Route path="/ar-view" element={<ARView />} />
                   <Route path="*" element={<Navigate to="/dashboard" />} />
                 </Routes>
               </MDBox>
@@ -277,6 +279,7 @@ export default function App() {
               {layout === "vr" && <Configurator />}
               <Routes>
                 {getRoutes(routes)}
+                <Route path="/ar-view" element={<ARView />} />
                 <Route path="*" element={<Navigate to="/dashboard" />} />
               </Routes>
             </MDBox>

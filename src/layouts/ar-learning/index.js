@@ -1,100 +1,180 @@
-import React, { useState, useEffect } from "react";
-import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
-import Icon from "@mui/material/Icon";
+import { useState, useEffect } from "react";
+import { Card, Grid, Icon, InputAdornment, Button } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import MDButton from "components/MDButton";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
-// Import 3D models and images
-import skeleton from "../../assets/3dModels/skeleton.obj";
-import skull from "../../assets/3dModels/Craneo3DS.3ds";
-import machine from "../../assets/3dModels/industrialmachine.fbx";
-import dna from "../../assets/3dModels/ДНК.fbx";
-
-import skeletonImage from "../../assets/images/skeleton.png";
-import skullImage from "../../assets/images/skull.png";
-import machineImage from "../../assets/images/machine.png";
-import dnaImage from "../../assets/images/dna.png";
+// Import new images
+import droneImage from "assets/images/drone.png";
+import eyeImplantImage from "assets/images/eye_implant.png";
+import rocketEngineImage from "assets/images/rocket_engine.png";
+import laptopImage from "assets/images/High_end_laptop.png";
+import skullImage from "assets/images/skull.png";
+import cellImage from "assets/images/cell.png";
+import solenoidImage from "assets/images/solenoid.png";
 
 function ARLearning() {
-  const scenarios = [
-    {
-      id: 1,
-      title: "Human Skeleton",
-      image: skeletonImage,
-      model: skeleton,
-      description:
-        "Explore the human skeletal system in 3D. Learn about bones, joints, and their functions.",
-      category: "Biology",
-      subject: "Anatomy",
-      type: "3D Model",
-    },
-    {
-      id: 2,
-      title: "Human Skull",
-      image: skullImage,
-      model: skull,
-      description: "Study the structure of the human skull and learn about cranial anatomy.",
-      category: "Biology",
-      subject: "Anatomy",
-      type: "3D Model",
-    },
-    {
-      id: 3,
-      title: "Simple Machine",
-      image: machineImage,
-      model: machine,
-      description:
-        "Understand the principles of simple machines through interactive 3D visualization.",
-      category: "Physics",
-      subject: "Mechanics",
-      type: "3D Model",
-    },
-    {
-      id: 4,
-      title: "DNA Structure",
-      image: dnaImage,
-      model: dna,
-      description: "Explore the double helix structure of DNA and learn about genetic information.",
-      category: "Biology",
-      subject: "Genetics",
-      type: "3D Model",
-    },
-  ];
-
+  const navigate = useNavigate();
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedSubject, setSelectedSubject] = useState("All");
-  const [showAR, setShowAR] = useState(null);
+  const [isARSupported, setIsARSupported] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    // Check if device is mobile
+    setIsMobile(
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    );
+
+    // Check if AR is supported
+    const checkARSupport = async () => {
+      try {
+        if ("xr" in navigator) {
+          const supported = await navigator.xr.isSessionSupported("immersive-ar");
+          setIsARSupported(supported);
+        } else if ("webxr" in navigator) {
+          setIsARSupported(true);
+        } else {
+          setIsARSupported(false);
+        }
+      } catch (error) {
+        console.log("AR support check failed:", error);
+        setIsARSupported(false);
+      }
+    };
+
     // Add model-viewer script
     const script = document.createElement("script");
     script.src = "https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js";
     script.type = "module";
-    document.body.appendChild(script);
+    document.head.appendChild(script);
+
+    checkARSupport();
 
     return () => {
-      document.body.removeChild(script);
+      document.head.removeChild(script);
     };
   }, []);
 
-  const categories = ["All", "Biology", "Physics", "Chemistry", "Mathematics"];
-  const subjects = ["All", "Anatomy", "Mechanics", "Genetics", "Chemistry"];
+  const categories = ["All", "Anatomy", "Technology", "Science", "Engineering"];
+  const subjects = ["All", "Biology", "Physics", "Chemistry", "Computer Science"];
 
-  const filteredScenarios = scenarios.filter(
-    (scenario) =>
-      scenario.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedCategory === "All" || scenario.category === selectedCategory) &&
-      (selectedSubject === "All" || scenario.subject === selectedSubject)
-  );
+  const scenarios = [
+    {
+      id: 1,
+      title: "Human Skull",
+      description: "Study the structure of the human skull and learn about cranial anatomy.",
+      category: "Anatomy",
+      subject: "Biology",
+      image: skullImage,
+      modelUrl: "/models/skull.glb",
+      scale: "0.5 0.5 0.5",
+      rotation: "0 0 0",
+      position: "0 0 0",
+    },
+    {
+      id: 2,
+      title: "Human Cell",
+      description: "Explore the complex structure of a human cell in 3D.",
+      category: "Anatomy",
+      subject: "Biology",
+      image: cellImage,
+      modelUrl: "/models/cell.glb",
+      scale: "0.3 0.3 0.3",
+      rotation: "0 0 0",
+      position: "0 0 0",
+    },
+    {
+      id: 3,
+      title: "Drone",
+      description: "Examine the components and structure of a modern drone.",
+      category: "Technology",
+      subject: "Computer Science",
+      image: droneImage,
+      modelUrl: "/models/drone.glb",
+      scale: "0.4 0.4 0.4",
+      rotation: "0 0 0",
+      position: "0 0 0",
+    },
+    {
+      id: 4,
+      title: "Eye Implant",
+      description: "Learn about the structure and function of an eye implant.",
+      category: "Technology",
+      subject: "Biology",
+      image: eyeImplantImage,
+      modelUrl: "/models/eye_implant.glb",
+      scale: "0.2 0.2 0.2",
+      rotation: "0 0 0",
+      position: "0 0 0",
+    },
+    {
+      id: 5,
+      title: "Rocket Engine",
+      description: "Explore the internal workings of a rocket engine.",
+      category: "Engineering",
+      subject: "Physics",
+      image: rocketEngineImage,
+      modelUrl: "/models/rocket_engine.glb",
+      scale: "0.3 0.3 0.3",
+      rotation: "0 0 0",
+      position: "0 0 0",
+    },
+    {
+      id: 6,
+      title: "High-End Laptop",
+      description: "Study the internal components of a modern laptop.",
+      category: "Technology",
+      subject: "Computer Science",
+      image: laptopImage,
+      modelUrl: "/models/laptop.glb",
+      scale: "0.4 0.4 0.4",
+      rotation: "0 0 0",
+      position: "0 0 0",
+    },
+    {
+      id: 7,
+      title: "Solenoid",
+      description: "Understand the electromagnetic principles of a solenoid.",
+      category: "Engineering",
+      subject: "Physics",
+      image: solenoidImage,
+      modelUrl: "/models/solenoid.gltf",
+      scale: "0.3 0.3 0.3",
+      rotation: "0 0 0",
+      position: "0 0 0",
+    },
+  ];
 
-  const handleARView = (id) => {
-    setShowAR(showAR === id ? null : id);
+  const filteredScenarios = scenarios.filter((scenario) => {
+    const matchesSearch =
+      scenario.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      scenario.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === "All" || scenario.category === selectedCategory;
+    const matchesSubject = selectedSubject === "All" || scenario.subject === selectedSubject;
+    return matchesSearch && matchesCategory && matchesSubject;
+  });
+
+  const handleARView = (scenarioId) => {
+    const scenario = scenarios.find((s) => s.id === scenarioId);
+    if (scenario) {
+      navigate("/ar-view", {
+        state: {
+          modelUrl: scenario.modelUrl,
+          scale: scenario.scale,
+          rotation: scenario.rotation,
+          position: scenario.position,
+          title: scenario.title,
+          description: scenario.description,
+        },
+      });
+    }
   };
 
   return (
@@ -226,6 +306,10 @@ function ARLearning() {
                         backdropFilter: "blur(10px)",
                         border: "1px solid rgba(255, 255, 255, 0.2)",
                         boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+                        transition: "transform 0.2s ease-in-out",
+                        "&:hover": {
+                          transform: "translateY(-5px)",
+                        },
                       }}
                     >
                       <MDBox p={3}>
@@ -250,6 +334,10 @@ function ARLearning() {
                             borderRadius: "8px",
                             marginBottom: "16px",
                             boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+                            transition: "transform 0.2s ease-in-out",
+                            "&:hover": {
+                              transform: "scale(1.05)",
+                            },
                           }}
                         />
                         <MDTypography
@@ -263,21 +351,30 @@ function ARLearning() {
                         >
                           {scenario.description}
                         </MDTypography>
-                        <MDButton
-                          variant="gradient"
-                          color="info"
+                        <Button
+                          variant="contained"
+                          color="primary"
                           fullWidth
                           onClick={() => handleARView(scenario.id)}
+                          disabled={!isARSupported && isMobile}
                           sx={{
                             background: "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)",
                             boxShadow: "0 3px 5px 2px rgba(33, 203, 243, .3)",
                             "&:hover": {
                               background: "linear-gradient(45deg, #1976D2 30%, #1CB5E0 90%)",
                             },
+                            "&.Mui-disabled": {
+                              background: "rgba(33, 150, 243, 0.5)",
+                              cursor: "not-allowed",
+                            },
                           }}
                         >
-                          View in AR
-                        </MDButton>
+                          {isARSupported
+                            ? "View in AR"
+                            : isMobile
+                            ? "AR Not Supported on this Device"
+                            : "View 3D Model"}
+                        </Button>
                       </MDBox>
                     </Card>
                   </Grid>
