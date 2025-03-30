@@ -118,32 +118,56 @@ function AppContent() {
   // Check if the current path is an auth route
   const isAuthRoute = pathname.startsWith("/authentication");
 
-  // If user is not authenticated and trying to access protected routes, redirect to appropriate sign-in
+  // Handle authentication and routing
   useEffect(() => {
-    if (!isAuthenticated && !isAuthRoute) {
-      if (userType === "student") {
-        navigate("/authentication/sign-in");
-      } else if (userType === "teacher") {
-        navigate("/authentication/teacher-sign-in");
-      }
+    // If on root path, redirect to sign-up
+    if (pathname === "/") {
+      navigate("/authentication/sign-up");
+      return;
     }
-  }, [isAuthenticated, isAuthRoute, userType, navigate]);
 
-  // If user is authenticated and trying to access auth routes, redirect to appropriate dashboard
-  useEffect(() => {
-    if (isAuthenticated && isAuthRoute) {
-      if (userType === "student") {
+    // If user is not authenticated
+    if (!isAuthenticated) {
+      // If already on an auth route, stay there
+      if (isAuthRoute) {
+        return;
+      }
+      // Otherwise, redirect to sign-up
+      navigate("/authentication/sign-up");
+      return;
+    }
+
+    // If user is authenticated
+    if (isAuthenticated) {
+      // If on an auth route, redirect to appropriate dashboard
+      if (isAuthRoute) {
+        if (userType === "student") {
+          navigate("/dashboard");
+        } else if (userType === "teacher") {
+          navigate("/teacher-dashboard");
+        }
+        return;
+      }
+      // If on dashboard but wrong type, redirect to correct dashboard
+      if (userType === "student" && pathname === "/teacher-dashboard") {
         navigate("/dashboard");
-      } else if (userType === "teacher") {
+      } else if (userType === "teacher" && pathname === "/dashboard") {
         navigate("/teacher-dashboard");
       }
     }
-  }, [isAuthenticated, isAuthRoute, userType, navigate]);
+  }, [isAuthenticated, isAuthRoute, userType, navigate, pathname]);
 
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
       if (route.collapse) {
-        return getRoutes(route.collapse);
+        return (
+          <>
+            {route.route && (
+              <Route exact path={route.route} element={route.component} key={route.key} />
+            )}
+            {getRoutes(route.collapse)}
+          </>
+        );
       }
 
       if (route.route) {
@@ -200,7 +224,7 @@ function AppContent() {
         minHeight: "100vh",
       }}
     >
-      {!pathname.includes("/authentication") && pathname !== "/" && (
+      {isAuthenticated && !pathname.includes("/authentication") && pathname !== "/" && (
         <Sidenav
           color={sidenavColor}
           brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
@@ -214,11 +238,12 @@ function AppContent() {
         sx={({ breakpoints }) => ({
           minHeight: "100vh",
           position: "relative",
-          marginLeft: !pathname.includes("/authentication")
-            ? miniSidenav
-              ? "120px"
-              : "274px"
-            : "0",
+          marginLeft:
+            isAuthenticated && !pathname.includes("/authentication")
+              ? miniSidenav
+                ? "120px"
+                : "274px"
+              : "0",
           transition: "all 0.3s ease-in-out",
           padding: "16px",
           [breakpoints.down("sm")]: {
@@ -239,9 +264,10 @@ function AppContent() {
         )}
         {layout === "vr" && <Configurator />}
         <Routes>
+          <Route path="/" element={<Navigate to="/authentication/sign-up" replace />} />
           {getRoutes(routes)}
-          <Route path="/ar-view/:id" element={<ARView />} />
-          <Route path="*" element={<Navigate to="/dashboard" />} />
+          <Route path="/ar-view" element={<ARView />} />
+          <Route path="*" element={<Navigate to="/authentication/sign-up" replace />} />
         </Routes>
       </MDBox>
     </MDBox>

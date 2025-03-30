@@ -1,81 +1,54 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    const savedAuth = localStorage.getItem("isAuthenticated");
-    return savedAuth === "true";
-  });
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
+  const [userType, setUserType] = useState(null);
+  const navigate = useNavigate();
 
-  const [userProfile, setUserProfile] = useState(() => {
-    const savedProfile = localStorage.getItem("userProfile");
-    return savedProfile ? JSON.parse(savedProfile) : null;
-  });
-
-  const [userType, setUserType] = useState(() => {
-    const savedType = localStorage.getItem("userType");
-    return savedType || null;
-  });
-
+  // Clear any existing auth data on mount
   useEffect(() => {
-    localStorage.setItem("isAuthenticated", isAuthenticated);
-  }, [isAuthenticated]);
+    localStorage.removeItem("auth");
+    localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("userProfile");
+    localStorage.removeItem("userType");
+  }, []);
 
-  useEffect(() => {
-    if (userProfile) {
-      localStorage.setItem("userProfile", JSON.stringify(userProfile));
-    } else {
-      localStorage.removeItem("userProfile");
-    }
-  }, [userProfile]);
-
-  useEffect(() => {
-    if (userType) {
-      localStorage.setItem("userType", userType);
-    } else {
-      localStorage.removeItem("userType");
-    }
-  }, [userType]);
-
-  const login = (profileData, type) => {
+  const login = (userType) => {
     setIsAuthenticated(true);
-    if (profileData) {
-      setUserProfile(profileData);
-    }
-    if (type) {
-      setUserType(type);
-    }
-    localStorage.setItem("isAuthenticated", "true");
-    if (profileData) {
-      localStorage.setItem("userProfile", JSON.stringify(profileData));
-    }
-    if (type) {
-      localStorage.setItem("userType", type);
-    }
+    setUserType(userType);
+    localStorage.setItem("auth", JSON.stringify({ isAuthenticated: true, userType }));
   };
 
   const logout = () => {
     setIsAuthenticated(false);
     setUserProfile(null);
     setUserType(null);
+    localStorage.removeItem("auth");
     localStorage.removeItem("isAuthenticated");
     localStorage.removeItem("userProfile");
     localStorage.removeItem("userType");
+    navigate("/authentication/sign-up");
   };
 
   const updateProfile = (profileData) => {
     setUserProfile(profileData);
   };
 
-  return (
-    <AuthContext.Provider
-      value={{ isAuthenticated, userProfile, userType, login, logout, updateProfile }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  const value = {
+    isAuthenticated,
+    userProfile,
+    userType,
+    login,
+    logout,
+    updateProfile,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 AuthProvider.propTypes = {

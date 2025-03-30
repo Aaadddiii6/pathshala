@@ -1,63 +1,57 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
-import MDButton from "components/MDButton";
-import Icon from "@mui/material/Icon";
+import { Dialog, DialogContent, DialogTitle, IconButton, Typography, Box } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 function Timer({ onStop }) {
-  const [time, setTime] = useState(0);
-  const [isRunning, setIsRunning] = useState(true);
+  const [seconds, setSeconds] = useState(0);
+  const [isActive, setIsActive] = useState(true);
 
   useEffect(() => {
-    let interval;
-    if (isRunning) {
+    let interval = null;
+    if (isActive) {
       interval = setInterval(() => {
-        setTime((prevTime) => prevTime + 1);
+        setSeconds((seconds) => seconds + 1);
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [isRunning]);
+  }, [isActive]);
 
-  const formatTime = (seconds) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
+  const handleClose = () => {
+    setIsActive(false);
+    onStop(seconds);
+  };
+
+  const formatTime = (totalSeconds) => {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const remainingSeconds = totalSeconds % 60;
     return `${hours.toString().padStart(2, "0")}:${minutes
       .toString()
       .padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
-  const handleStop = () => {
-    setIsRunning(false);
-    onStop(time);
-  };
-
   return (
-    <MDBox
-      position="fixed"
-      bottom={20}
-      right={20}
-      bgColor="info.main"
-      borderRadius="lg"
-      p={2}
-      boxShadow="lg"
-      zIndex={1000}
-    >
-      <MDBox display="flex" alignItems="center" gap={2}>
-        <MDTypography variant="h6" color="white">
-          Study Time: {formatTime(time)}
-        </MDTypography>
-        <MDButton
-          variant="gradient"
-          color="error"
-          onClick={handleStop}
-          startIcon={<Icon>stop</Icon>}
-        >
-          Stop Timer
-        </MDButton>
-      </MDBox>
-    </MDBox>
+    <Dialog open={true} onClose={handleClose} maxWidth="xs" fullWidth>
+      <DialogTitle>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography variant="h6">Study Timer</Typography>
+          <IconButton onClick={handleClose} size="small">
+            <CloseIcon />
+          </IconButton>
+        </Box>
+      </DialogTitle>
+      <DialogContent>
+        <Box display="flex" flexDirection="column" alignItems="center" py={2}>
+          <Typography variant="h3" component="div" gutterBottom>
+            {formatTime(seconds)}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Time spent in class
+          </Typography>
+        </Box>
+      </DialogContent>
+    </Dialog>
   );
 }
 

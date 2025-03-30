@@ -15,9 +15,7 @@ Coded by www.creative-tim.com
 
 import { useState } from "react";
 import React from "react";
-
-// react-router-dom components
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -46,17 +44,50 @@ import bgImage from "assets/images/background2.avif";
 import { useAuth } from "context/auth";
 
 function SignIn() {
-  const navigate = useNavigate();
   const { login } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const pathname = location.pathname;
 
-  const handleSignIn = (e) => {
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you would typically validate credentials
-    // For now, we'll just log in
-    login(null, "student");
-    navigate("/dashboard");
+    setError("");
+
+    try {
+      // Check for admin credentials
+      if (formData.email === "admin@gmail.com" && formData.password === "admin123") {
+        login("admin");
+        navigate("/admin-dashboard");
+        return;
+      }
+
+      // Determine user type based on the current route
+      const userType = pathname.includes("teacher") ? "teacher" : "student";
+
+      // For demo purposes, we'll just log in with any credentials
+      login(userType);
+
+      // Navigate based on user type
+      if (userType === "teacher") {
+        navigate("/teacher-dashboard");
+      } else {
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      setError("An error occurred during sign in");
+    }
   };
 
   return (
@@ -68,9 +99,9 @@ function SignIn() {
       <Card sx={{ width: "100%" }}>
         <MDBox
           variant="gradient"
-          bgColor="info"
+          bgColor={pathname.includes("teacher") ? "info" : "info"}
           borderRadius="lg"
-          coloredShadow="info"
+          coloredShadow={pathname.includes("teacher") ? "info" : "info"}
           mx={2}
           mt={-3}
           p={2}
@@ -78,23 +109,24 @@ function SignIn() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Student Sign In
+            {pathname.includes("teacher") ? "Teacher Sign In" : "Student Sign In"}
           </MDTypography>
           <MDTypography display="block" variant="button" color="white" my={1}>
-            Enter your credentials to continue
+            {pathname.includes("teacher") ? "Welcome back, teacher!" : "Welcome back, student!"}
           </MDTypography>
         </MDBox>
         <MDBox pt={3} pb={2} px={3}>
-          <MDBox component="form" role="form" onSubmit={handleSignIn}>
+          <MDBox component="form" role="form" onSubmit={handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <MDInput
                   type="email"
                   label="Email"
                   fullWidth
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
                 />
               </Grid>
               <Grid item xs={12}>
@@ -102,20 +134,35 @@ function SignIn() {
                   type="password"
                   label="Password"
                   fullWidth
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
                 />
               </Grid>
             </Grid>
-            <MDBox display="flex" alignItems="center" mt={2} mb={2}>
-              <MDTypography variant="button" color="text" fontWeight="regular">
+            <MDBox mt={3} mb={1}>
+              <MDButton
+                variant="gradient"
+                color={pathname.includes("teacher") ? "info" : "info"}
+                fullWidth
+                type="submit"
+              >
+                Sign In
+              </MDButton>
+            </MDBox>
+            <MDBox mt={3} mb={1} textAlign="center">
+              <MDTypography variant="button" color="text">
                 Don&apos;t have an account?{" "}
                 <MDTypography
                   component={Link}
-                  to="/authentication/sign-up"
+                  to={
+                    pathname.includes("teacher")
+                      ? "/authentication/teacher-sign-up"
+                      : "/authentication/student-sign-up"
+                  }
                   variant="button"
-                  color="info"
+                  color={pathname.includes("teacher") ? "info" : "info"}
                   fontWeight="medium"
                   textGradient
                 >
@@ -123,11 +170,11 @@ function SignIn() {
                 </MDTypography>
               </MDTypography>
             </MDBox>
-            <MDBox mt={3} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
-                Sign In
-              </MDButton>
-            </MDBox>
+            {error && (
+              <MDTypography variant="button" color="error" textAlign="center" mt={2}>
+                {error}
+              </MDTypography>
+            )}
           </MDBox>
         </MDBox>
       </Card>
