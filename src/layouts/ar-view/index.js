@@ -16,32 +16,32 @@ function ARView() {
   const [isMobile, setIsMobile] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { modelUrl, scale, rotation, position, title, description } = location.state || {};
+  const [isScriptLoaded, setIsScriptLoaded] = useState(false);
 
   // Define scenarios data
   const scenarios = [
     {
       id: 1,
-      title: "Human Skeleton",
-      description: "Explore the human skeletal system in 3D",
+      title: "Human Skull",
+      description: "Study the structure of the human skull and learn about cranial anatomy.",
       modelUrl: "/models/skull.glb",
-      scale: "0.3 0.3 0.3",
+      scale: "0.5 0.5 0.5",
       rotation: "0 0 0",
       position: "0 0 0",
     },
     {
       id: 2,
-      title: "Cell Structure",
-      description: "Study the complex structure of a cell",
+      title: "Human Cell",
+      description: "Explore the complex structure of a human cell in 3D.",
       modelUrl: "/models/cell.glb",
-      scale: "0.2 0.2 0.2",
+      scale: "0.3 0.3 0.3",
       rotation: "0 0 0",
       position: "0 0 0",
     },
     {
       id: 3,
       title: "Drone",
-      description: "Examine the components of a modern drone",
+      description: "Examine the components and structure of a modern drone.",
       modelUrl: "/models/drone.glb",
       scale: "0.4 0.4 0.4",
       rotation: "0 0 0",
@@ -50,36 +50,27 @@ function ARView() {
     {
       id: 4,
       title: "Eye Implant",
-      description: "Learn about modern eye implant technology",
+      description: "Learn about the structure and function of an eye implant.",
       modelUrl: "/models/eye_implant.glb",
-      scale: "0.3 0.3 0.3",
+      scale: "0.2 0.2 0.2",
       rotation: "0 0 0",
       position: "0 0 0",
     },
     {
       id: 5,
       title: "Rocket Engine",
-      description: "Explore the inner workings of a rocket engine",
+      description: "Explore the internal workings of a rocket engine.",
       modelUrl: "/models/rocket_engine.glb",
-      scale: "0.4 0.4 0.4",
+      scale: "0.3 0.3 0.3",
       rotation: "0 0 0",
       position: "0 0 0",
     },
     {
       id: 6,
-      title: "Laptop",
-      description: "Study the internal components of a laptop",
-      modelUrl: "/models/laptop.glb",
-      scale: "0.3 0.3 0.3",
-      rotation: "0 0 0",
-      position: "0 0 0",
-    },
-    {
-      id: 7,
-      title: "Solenoid",
-      description: "Understand the electromagnetic principles of a solenoid",
-      modelUrl: "/models/solenoid.gltf",
-      scale: "0.3 0.3 0.3",
+      title: "High-End Laptop",
+      description: "Study the internal components of a modern laptop.",
+      modelUrl: "/models/High_end_laptop.glb",
+      scale: "0.4 0.4 0.4",
       rotation: "0 0 0",
       position: "0 0 0",
     },
@@ -115,6 +106,14 @@ function ARView() {
     const script = document.createElement("script");
     script.src = "https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js";
     script.type = "module";
+    script.onload = () => {
+      setIsScriptLoaded(true);
+      setIsLoading(false);
+    };
+    script.onerror = () => {
+      setError("Failed to load the model viewer script. Please check your internet connection.");
+      setIsLoading(false);
+    };
     document.head.appendChild(script);
 
     checkARSupport();
@@ -258,26 +257,22 @@ function ARView() {
                 backgroundColor: "#f5f5f5",
               }}
             >
-              {isARSupported && (
-                <button
-                  slot="ar-button"
-                  style={{
-                    backgroundColor: "#2196F3",
-                    borderRadius: "4px",
-                    border: "none",
-                    color: "white",
-                    padding: "8px 16px",
-                    cursor: "pointer",
-                    position: "absolute",
-                    bottom: "16px",
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    zIndex: 1000,
-                  }}
-                >
-                  View in AR
-                </button>
-              )}
+              <button
+                slot="ar-button"
+                style={{
+                  backgroundColor: "white",
+                  borderRadius: "4px",
+                  position: "absolute",
+                  bottom: "16px",
+                  right: "16px",
+                  padding: "8px 16px",
+                  border: "none",
+                  cursor: "pointer",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                }}
+              >
+                👋 Activate AR
+              </button>
             </model-viewer>
           )}
         </Card>
