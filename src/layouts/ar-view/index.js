@@ -5,6 +5,7 @@ import Icon from "@mui/material/Icon";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import { useMaterialUIController } from "context";
+import MDBox from "components/MDBox";
 
 function ARView() {
   const { id } = useParams();
@@ -17,6 +18,8 @@ function ARView() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
+  const [modelData, setModelData] = useState(null);
+  const [isARMode, setIsARMode] = useState(false);
 
   // Define scenarios data
   const scenarios = [
@@ -123,6 +126,45 @@ function ARView() {
     };
   }, []);
 
+  useEffect(() => {
+    // In a real application, you would fetch the model data based on the ID
+    // For now, we'll use some mock data
+    const mockModels = {
+      1: {
+        title: "Human Skull",
+        modelUrl: "/models/skull.glb",
+        scale: "0.5 0.5 0.5",
+        rotation: "0 0 0",
+        position: "0 0 0",
+      },
+      2: {
+        title: "Human Cell",
+        modelUrl: "/models/cell.glb",
+        scale: "0.3 0.3 0.3",
+        rotation: "0 0 0",
+        position: "0 0 0",
+      },
+      // Add more models as needed
+    };
+
+    setModelData(mockModels[id]);
+
+    // Add model-viewer script if not already present
+    if (!document.querySelector('script[src*="model-viewer"]')) {
+      const script = document.createElement("script");
+      script.src = "https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js";
+      script.type = "module";
+      document.head.appendChild(script);
+    }
+
+    return () => {
+      const script = document.querySelector('script[src*="model-viewer"]');
+      if (script) {
+        document.head.removeChild(script);
+      }
+    };
+  }, [id]);
+
   const handleModelError = (error) => {
     console.error("Model loading error:", error);
     setError("Failed to load the 3D model. Please check if the model file exists.");
@@ -176,157 +218,98 @@ function ARView() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <Box p={3}>
-        <Card sx={{ height: "calc(100vh - 200px)", position: "relative" }}>
-          <IconButton
-            onClick={() => navigate("/ar-learning")}
-            sx={{
-              position: "absolute",
-              top: 16,
-              right: 16,
-              background: "rgba(255, 255, 255, 0.9)",
-              "&:hover": {
-                background: "rgba(255, 255, 255, 1)",
-              },
-              zIndex: 1000,
-            }}
-          >
-            <Icon>close</Icon>
-          </IconButton>
-
-          {isLoading && (
-            <Box
-              sx={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                zIndex: 1000,
-              }}
-            >
-              <CircularProgress />
-            </Box>
-          )}
-
-          {error ? (
-            <Box
-              sx={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                textAlign: "center",
-                zIndex: 1000,
-              }}
-            >
-              <Typography color="error" gutterBottom>
-                {error}
-              </Typography>
-              <Button variant="contained" color="primary" onClick={() => navigate("/ar-learning")}>
-                Back to AR Learning
-              </Button>
-            </Box>
-          ) : (
-            <model-viewer
-              src={scenario.modelUrl}
-              alt={scenario.title}
-              ar={isARSupported}
-              ar-modes="webxr scene-viewer quick-look"
-              camera-controls
-              auto-rotate
-              camera-orbit="45deg 55deg 2.5m"
-              min-camera-orbit="auto auto 0.1m"
-              max-camera-orbit="auto auto 100m"
-              scale={scenario.scale}
-              rotation={scenario.rotation}
-              position={scenario.position}
-              environment-image="neutral"
-              shadow-intensity="1"
-              exposure="1"
-              shadow-softness="1"
-              animation-name="*"
-              interaction-prompt="auto"
-              interaction-prompt-style="basic"
-              interaction-prompt-threshold="0"
-              touch-action="pan-y"
-              onerror={handleModelError}
-              onload={handleModelLoad}
-              style={{
-                width: "100%",
-                height: "100%",
-                backgroundColor: "#f5f5f5",
-              }}
-            >
-              <button
-                slot="ar-button"
-                style={{
-                  backgroundColor: "white",
-                  borderRadius: "4px",
-                  position: "absolute",
-                  bottom: "16px",
-                  right: "16px",
-                  padding: "8px 16px",
-                  border: "none",
-                  cursor: "pointer",
-                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                }}
-              >
-                👋 Activate AR
-              </button>
-            </model-viewer>
-          )}
-        </Card>
-
-        <Box mt={2}>
-          <Typography variant="h5" color="#2196F3" gutterBottom>
-            {scenario.title}
-          </Typography>
-          <Typography variant="body1" color="#2196F3">
-            {scenario.description}
-          </Typography>
-          {!isARSupported && isMobile && (
-            <Typography variant="body2" color="error" sx={{ mt: 1 }}>
-              AR is not supported on your device. You can still view the 3D model in the viewer
-              above.
-            </Typography>
-          )}
-        </Box>
-
-        <Typography
-          variant="h4"
+      <MDBox
+        sx={{
+          position: "relative",
+          backgroundColor: "white",
+          minHeight: "100vh",
+          padding: { xs: "10px", sm: "20px" },
+        }}
+      >
+        <IconButton
+          onClick={() => navigate("/ar-learning")}
           sx={{
-            marginBottom: "20px",
-            textAlign: "center",
-            color: "#2196F3",
-            textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
+            position: "absolute",
+            top: "20px",
+            left: "20px",
+            zIndex: 1,
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
+            "&:hover": {
+              backgroundColor: "rgba(255, 255, 255, 0.9)",
+            },
           }}
         >
-          {scenario.title}
-        </Typography>
+          <Icon>arrow_back</Icon>
+        </IconButton>
 
-        {!isARSupported && (
-          <Box
-            sx={{
-              backgroundColor: "rgba(33, 150, 243, 0.2)",
-              padding: "15px",
-              borderRadius: "8px",
-              marginBottom: "20px",
-              maxWidth: "400px",
-            }}
-          >
-            <Typography variant="body1" sx={{ color: "#fff", textAlign: "center" }}>
-              You&apos;re viewing this on a device that doesn&apos;t support AR. You can still
-              interact with the 3D model using your mouse:
-            </Typography>
-            <Typography variant="body2" sx={{ color: "#fff", mt: 1 }}>
-              • Left click + drag to rotate
-              <br />
-              • Right click + drag to pan
-              <br />• Scroll to zoom
-            </Typography>
-          </Box>
-        )}
-      </Box>
+        <MDBox
+          sx={{
+            position: "absolute",
+            top: "20px",
+            right: "20px",
+            zIndex: 1,
+            display: "flex",
+            gap: 1,
+          }}
+        >
+          {isARSupported && (
+            <Button
+              variant="contained"
+              color={isARMode ? "secondary" : "primary"}
+              onClick={() => setIsARMode(!isARMode)}
+              startIcon={<Icon>{isARMode ? "view_in_ar" : "view_in_ar"}</Icon>}
+              sx={{
+                backgroundColor: isARMode ? "#f50057" : "#1a73e8",
+                "&:hover": {
+                  backgroundColor: isARMode ? "#c51162" : "#1557b0",
+                },
+              }}
+            >
+              {isARMode ? "Exit AR" : "Enter AR"}
+            </Button>
+          )}
+        </MDBox>
+
+        <model-viewer
+          src={scenario.modelUrl}
+          alt={scenario.title}
+          ar={isARMode}
+          ar-modes="webxr scene-viewer quick-look"
+          camera-controls
+          shadow-intensity="1"
+          auto-rotate
+          camera-orbit="45deg 55deg 2.5m"
+          min-camera-orbit="auto auto 0.1m"
+          max-camera-orbit="auto auto 10m"
+          scale={scenario.scale}
+          rotation={scenario.rotation}
+          position={scenario.position}
+          style={{
+            width: "100%",
+            height: "100vh",
+            backgroundColor: "#f8f9fa",
+          }}
+          onerror={handleModelError}
+          onload={handleModelLoad}
+        >
+          {isARMode && (
+            <button
+              slot="ar-button"
+              style={{
+                backgroundColor: "#1a73e8",
+                borderRadius: "4px",
+                border: "none",
+                color: "white",
+                padding: "8px 16px",
+                cursor: "pointer",
+                fontSize: "16px",
+              }}
+            >
+              View in AR
+            </button>
+          )}
+        </model-viewer>
+      </MDBox>
     </DashboardLayout>
   );
 }

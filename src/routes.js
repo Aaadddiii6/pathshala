@@ -58,6 +58,7 @@ import EnglishQuiz from "layouts/quiz/english";
 import ARLearning from "layouts/ar-learning";
 import VirtualClassroom from "layouts/virtual-classroom";
 import Chatbot from "layouts/chatbot";
+import ARView from "layouts/ar-view";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -220,6 +221,13 @@ const routes = [
     icon: <Icon fontSize="medium">person</Icon>,
     component: <Profile />,
     noCollapse: true,
+  },
+  {
+    type: "route",
+    name: "AR View",
+    key: "ar-view",
+    route: "/ar-view/:id",
+    component: <ARView />,
   },
 ];
 

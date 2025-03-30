@@ -8,6 +8,12 @@ import {
   CardMedia,
   CardContent,
   Chip,
+  Dialog,
+  DialogContent,
+  DialogActions,
+  Box,
+  CircularProgress,
+  Typography,
 } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -37,6 +43,10 @@ function ARLearning() {
   const [selectedSubject, setSelectedSubject] = useState("All");
   const [isARSupported, setIsARSupported] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [selectedModel, setSelectedModel] = useState(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     // Check if device is mobile
@@ -53,11 +63,11 @@ function ARLearning() {
         } else if ("webxr" in navigator) {
           setIsARSupported(true);
         } else {
-          setIsARSupported(false);
+          setIsARSupported(true); // Temporarily set to true for testing
         }
       } catch (error) {
         console.log("AR support check failed:", error);
-        setIsARSupported(false);
+        setIsARSupported(true); // Temporarily set to true for testing
       }
     };
 
@@ -161,8 +171,32 @@ function ARLearning() {
     return matchesSearch && matchesCategory && matchesSubject;
   });
 
-  const handleARView = (scenarioId) => {
-    navigate(`/ar-view/${scenarioId}`);
+  const handleModelError = (error) => {
+    console.error("Model loading error:", error);
+    setError("Failed to load the 3D model. Please check if the model file exists.");
+    setIsLoading(false);
+  };
+
+  const handleModelLoad = () => {
+    setIsLoading(false);
+    setError(null);
+  };
+
+  const handleViewInAR = (scenario) => {
+    setSelectedModel(scenario);
+    setIsPreviewOpen(true);
+  };
+
+  const handleActivateAR = () => {
+    if (selectedModel) {
+      navigate(`/ar-view/${selectedModel.id}`);
+    }
+  };
+
+  const handleClosePreview = () => {
+    setIsPreviewOpen(false);
+    setSelectedModel(null);
+    setError(null);
   };
 
   return (
@@ -356,7 +390,7 @@ function ARLearning() {
                         variant="gradient"
                         color="info"
                         fullWidth
-                        onClick={() => handleARView(scenario.id)}
+                        onClick={() => handleViewInAR(scenario)}
                         sx={{
                           borderRadius: "8px",
                           textTransform: "none",
@@ -374,6 +408,93 @@ function ARLearning() {
           </Grid>
         </MDBox>
       </MDBox>
+
+      {/* Preview Modal */}
+      <Dialog
+        open={isPreviewOpen}
+        onClose={handleClosePreview}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+          sx: {
+            height: "90vh",
+            maxHeight: "90vh",
+          },
+        }}
+      >
+        <DialogContent sx={{ p: 0, position: "relative" }}>
+          {selectedModel && (
+            <Box sx={{ height: "100%", position: "relative" }}>
+              <model-viewer
+                src={selectedModel.modelUrl}
+                alt={selectedModel.title}
+                camera-controls
+                shadow-intensity="1"
+                auto-rotate
+                camera-orbit="45deg 55deg 2.5m"
+                min-camera-orbit="auto auto 0.1m"
+                max-camera-orbit="auto auto 10m"
+                scale={selectedModel.scale}
+                rotation={selectedModel.rotation}
+                position={selectedModel.position}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "#f8f9fa",
+                }}
+                onerror={handleModelError}
+                onload={handleModelLoad}
+              />
+              {isLoading && (
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                  }}
+                >
+                  <CircularProgress />
+                </Box>
+              )}
+              {error && (
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    textAlign: "center",
+                    backgroundColor: "rgba(255, 255, 255, 0.9)",
+                    padding: "20px",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <Typography color="error">{error}</Typography>
+                </Box>
+              )}
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions sx={{ p: 2, justifyContent: "space-between" }}>
+          <Button onClick={handleClosePreview}>Close Preview</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleActivateAR}
+            startIcon={<Icon>view_in_ar</Icon>}
+            sx={{
+              backgroundColor: "#1a73e8",
+              "&:hover": {
+                backgroundColor: "#1557b0",
+              },
+            }}
+          >
+            Activate AR
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Footer />
     </DashboardLayout>
   );
