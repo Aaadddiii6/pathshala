@@ -219,7 +219,7 @@ export default function App() {
                 {layout === "vr" && <Configurator />}
                 <Routes>
                   {getRoutes(routes)}
-                  <Route path="/ar-view" element={<ARView />} />
+                  <Route path="/ar-view/:id" element={<ARView />} />
                   <Route path="*" element={<Navigate to="/dashboard" />} />
                 </Routes>
               </MDBox>
@@ -279,7 +279,7 @@ export default function App() {
               {layout === "vr" && <Configurator />}
               <Routes>
                 {getRoutes(routes)}
-                <Route path="/ar-view" element={<ARView />} />
+                <Route path="/ar-view/:id" element={<ARView />} />
                 <Route path="*" element={<Navigate to="/dashboard" />} />
               </Routes>
             </MDBox>

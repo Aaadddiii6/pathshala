@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Card, IconButton, Box, Typography, Button, CircularProgress } from "@mui/material";
 import Icon from "@mui/material/Icon";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+import { useMaterialUIController } from "context";
 
 function ARView() {
+  const { id } = useParams();
+  const [controller, dispatch] = useMaterialUIController();
+  const { miniSidenav } = controller;
   const location = useLocation();
   const navigate = useNavigate();
   const [isARSupported, setIsARSupported] = useState(false);
@@ -13,6 +17,76 @@ function ARView() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const { modelUrl, scale, rotation, position, title, description } = location.state || {};
+
+  // Define scenarios data
+  const scenarios = [
+    {
+      id: 1,
+      title: "Human Skeleton",
+      description: "Explore the human skeletal system in 3D",
+      modelUrl: "/models/skull.glb",
+      scale: "0.3 0.3 0.3",
+      rotation: "0 0 0",
+      position: "0 0 0",
+    },
+    {
+      id: 2,
+      title: "Cell Structure",
+      description: "Study the complex structure of a cell",
+      modelUrl: "/models/cell.glb",
+      scale: "0.2 0.2 0.2",
+      rotation: "0 0 0",
+      position: "0 0 0",
+    },
+    {
+      id: 3,
+      title: "Drone",
+      description: "Examine the components of a modern drone",
+      modelUrl: "/models/drone.glb",
+      scale: "0.4 0.4 0.4",
+      rotation: "0 0 0",
+      position: "0 0 0",
+    },
+    {
+      id: 4,
+      title: "Eye Implant",
+      description: "Learn about modern eye implant technology",
+      modelUrl: "/models/eye_implant.glb",
+      scale: "0.3 0.3 0.3",
+      rotation: "0 0 0",
+      position: "0 0 0",
+    },
+    {
+      id: 5,
+      title: "Rocket Engine",
+      description: "Explore the inner workings of a rocket engine",
+      modelUrl: "/models/rocket_engine.glb",
+      scale: "0.4 0.4 0.4",
+      rotation: "0 0 0",
+      position: "0 0 0",
+    },
+    {
+      id: 6,
+      title: "Laptop",
+      description: "Study the internal components of a laptop",
+      modelUrl: "/models/laptop.glb",
+      scale: "0.3 0.3 0.3",
+      rotation: "0 0 0",
+      position: "0 0 0",
+    },
+    {
+      id: 7,
+      title: "Solenoid",
+      description: "Understand the electromagnetic principles of a solenoid",
+      modelUrl: "/models/solenoid.gltf",
+      scale: "0.3 0.3 0.3",
+      rotation: "0 0 0",
+      position: "0 0 0",
+    },
+  ];
+
+  // Get the current scenario
+  const scenario = scenarios.find((s) => s.id === parseInt(id));
 
   useEffect(() => {
     // Check if device is mobile
@@ -61,19 +135,37 @@ function ARView() {
     setError(null);
   };
 
-  if (!modelUrl) {
+  if (!scenario) {
     return (
       <DashboardLayout>
-        <DashboardNavbar />
-        <Box p={3}>
-          <Typography variant="h4" color="error">
-            No model selected
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: "100vh",
+            backgroundColor: "#000",
+            color: "#fff",
+            padding: "20px",
+          }}
+        >
+          <Typography variant="h4" color="error" gutterBottom>
+            Scenario Not Found
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 3 }}>
+            The requested AR scenario could not be found.
           </Typography>
           <Button
             variant="contained"
             color="primary"
             onClick={() => navigate("/ar-learning")}
-            sx={{ mt: 2 }}
+            sx={{
+              backgroundColor: "rgba(33, 150, 243, 0.9)",
+              "&:hover": {
+                backgroundColor: "rgba(33, 150, 243, 1)",
+              },
+            }}
           >
             Back to AR Learning
           </Button>
@@ -137,8 +229,8 @@ function ARView() {
             </Box>
           ) : (
             <model-viewer
-              src={modelUrl}
-              alt={title}
+              src={scenario.modelUrl}
+              alt={scenario.title}
               ar={isARSupported}
               ar-modes="webxr scene-viewer quick-look"
               camera-controls
@@ -146,9 +238,9 @@ function ARView() {
               camera-orbit="45deg 55deg 2.5m"
               min-camera-orbit="auto auto 0.1m"
               max-camera-orbit="auto auto 100m"
-              scale={scale}
-              rotation={rotation}
-              position={position}
+              scale={scenario.scale}
+              rotation={scenario.rotation}
+              position={scenario.position}
               environment-image="neutral"
               shadow-intensity="1"
               exposure="1"
@@ -192,10 +284,10 @@ function ARView() {
 
         <Box mt={2}>
           <Typography variant="h5" color="#2196F3" gutterBottom>
-            {title}
+            {scenario.title}
           </Typography>
           <Typography variant="body1" color="#2196F3">
-            {description}
+            {scenario.description}
           </Typography>
           {!isARSupported && isMobile && (
             <Typography variant="body2" color="error" sx={{ mt: 1 }}>
@@ -214,7 +306,7 @@ function ARView() {
             textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
           }}
         >
-          {title}
+          {scenario.title}
         </Typography>
 
         {!isARSupported && (
