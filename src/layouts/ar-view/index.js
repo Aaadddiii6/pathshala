@@ -8,15 +8,16 @@ import { useMaterialUIController } from "context";
 
 function ARView() {
   const { id } = useParams();
-  const [controller, dispatch] = useMaterialUIController();
-  const { miniSidenav } = controller;
   const location = useLocation();
   const navigate = useNavigate();
+  const [controller, dispatch] = useMaterialUIController();
+  const { miniSidenav } = controller;
   const [isARSupported, setIsARSupported] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
+  const [modelViewer, setModelViewer] = useState(null);
 
   // Define scenarios data
   const scenarios = [
@@ -132,6 +133,21 @@ function ARView() {
   const handleModelLoad = () => {
     setIsLoading(false);
     setError(null);
+
+    // Get the model-viewer element
+    const viewer = document.querySelector("model-viewer");
+    if (viewer) {
+      setModelViewer(viewer);
+
+      // If we have the activateAR state, trigger AR mode
+      if (location.state?.activateAR) {
+        // Find and click the AR button
+        const arButton = viewer.querySelector('[slot="ar-button"]');
+        if (arButton) {
+          arButton.click();
+        }
+      }
+    }
   };
 
   if (!scenario) {
@@ -269,7 +285,6 @@ function ARView() {
                   border: "none",
                   cursor: "pointer",
                   boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                  display: "none", // Hide the default AR button
                 }}
               >
                 👋 Activate AR

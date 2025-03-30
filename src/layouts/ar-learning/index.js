@@ -189,7 +189,8 @@ function ARLearning() {
 
   const handleActivateAR = () => {
     if (selectedModel) {
-      navigate(`/ar-view/${selectedModel.id}`);
+      setIsPreviewOpen(false);
+      navigate(`/ar-view/${selectedModel.id}`, { state: { activateAR: true } });
     }
   };
 
