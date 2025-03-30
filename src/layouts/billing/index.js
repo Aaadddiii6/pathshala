@@ -21,6 +21,7 @@ import SendIcon from "@mui/icons-material/Send";
 import { useState, useRef, useEffect } from "react";
 import Chip from "@mui/material/Chip";
 import Icon from "@mui/material/Icon";
+import MenuItem from "@mui/material/MenuItem";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -194,214 +195,199 @@ function Billing() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox pt={6} pb={3}>
-        <Grid container spacing={6}>
-          <Grid item xs={12}>
-            <Card sx={{ height: "calc(100vh - 200px)" }}>
+      <MDBox
+        sx={{
+          position: "relative",
+          backgroundColor: "white",
+          minHeight: "100vh",
+          padding: { xs: "0", sm: "20px" },
+        }}
+      >
+        <MDBox
+          sx={{
+            backgroundColor: "#f8f9fa",
+            borderRadius: { xs: "0", sm: "15px" },
+            padding: { xs: "10px", sm: "20px" },
+            marginBottom: { xs: "0", sm: "20px" },
+            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            height: { xs: "100vh", sm: "auto" },
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <MDBox sx={{ display: { xs: "none", sm: "block" } }}>
+            <MDTypography
+              variant="h4"
+              color="dark"
+              gutterBottom
+              sx={{ fontSize: { xs: "1.5rem", sm: "2rem" } }}
+            >
+              AI Learning Assistant
+            </MDTypography>
+            <MDTypography
+              variant="body1"
+              color="text"
+              sx={{ mb: 3, fontSize: { xs: "0.875rem", sm: "1rem" } }}
+            >
+              Get instant help with your studies
+            </MDTypography>
+          </MDBox>
+
+          <MDBox
+            sx={{
+              display: "flex",
+              gap: { xs: 1, sm: 2 },
+              flexWrap: "wrap",
+              alignItems: "center",
+              mb: { xs: 1, sm: 3 },
+              px: { xs: 1, sm: 0 },
+            }}
+          >
+            <MDInput
+              select
+              label="Subject"
+              value={selectedSubject}
+              onChange={(e) => setSelectedSubject(e.target.value)}
+              sx={{
+                display: { xs: "none", sm: "block" },
+                minWidth: "150px",
+                backgroundColor: "white",
+                borderRadius: "8px",
+                "& .MuiInputBase-input": {
+                  color: "dark",
+                },
+                "& .MuiInputLabel-root": {
+                  color: "dark",
+                },
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "rgba(0, 0, 0, 0.2)",
+                },
+                "&:hover .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "rgba(0, 0, 0, 0.3)",
+                },
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "rgba(0, 0, 0, 0.4)",
+                },
+              }}
+            >
+              <MenuItem value="">All Subjects</MenuItem>
+              <MenuItem value="Biology">Biology</MenuItem>
+              <MenuItem value="Physics">Physics</MenuItem>
+              <MenuItem value="Chemistry">Chemistry</MenuItem>
+              <MenuItem value="Computer Science">Computer Science</MenuItem>
+            </MDInput>
+          </MDBox>
+
+          <MDBox
+            sx={{
+              flex: 1,
+              overflowY: "auto",
+              mb: 2,
+              px: { xs: 1, sm: 0 },
+            }}
+          >
+            {messages.map((message, index) => (
               <MDBox
+                key={index}
                 sx={{
-                  height: "100%",
                   display: "flex",
-                  flexDirection: "column",
+                  justifyContent: message.type === "user" ? "flex-end" : "flex-start",
+                  mb: 2,
                 }}
               >
-                {/* Chat Header */}
                 <MDBox
-                  p={2}
-                  borderBottom="1px solid"
-                  borderColor="divider"
                   sx={{
-                    background: "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)",
-                    color: "white",
+                    maxWidth: "80%",
+                    backgroundColor: message.type === "user" ? "#E8F5E9" : "#E3F2FD",
+                    color: message.type === "user" ? "#2E7D32" : "#1976D2",
+                    padding: "10px 15px",
+                    borderRadius: "15px",
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                    position: "relative",
                   }}
                 >
-                  <MDTypography variant="h6" fontWeight="medium">
-                    AI Study Assistant
+                  <MDTypography
+                    variant="body2"
+                    sx={{
+                      fontSize: { xs: "0.875rem", sm: "1rem" },
+                      whiteSpace: "pre-wrap",
+                    }}
+                  >
+                    {message.content}
                   </MDTypography>
-                  {error && (
-                    <MDTypography variant="caption" color="error" fontWeight="regular">
-                      {error}
-                    </MDTypography>
-                  )}
-                </MDBox>
-
-                {/* Subject Selection */}
-                <MDBox
-                  p={2}
-                  borderBottom="1px solid"
-                  borderColor="divider"
-                  sx={{
-                    background: "linear-gradient(45deg, #f3f4f6 30%, #e5e7eb 90%)",
-                    maxHeight: { xs: "120px", sm: "auto" },
-                    overflowY: "auto",
-                  }}
-                >
-                  <MDTypography variant="body2" color="text" mb={1} fontWeight="medium">
-                    Select Subject:
-                  </MDTypography>
-                  <MDBox display="flex" gap={1} flexWrap="wrap">
-                    {subjects.map((subject) => (
-                      <Chip
-                        key={subject}
-                        label={subject}
-                        color={selectedSubject === subject ? "primary" : "default"}
-                        onClick={() => handleSubjectSelect(subject)}
-                        sx={{
-                          m: 0.5,
-                          "&:hover": {
-                            backgroundColor: "primary.light",
-                            color: "white",
-                          },
-                        }}
-                      />
-                    ))}
-                  </MDBox>
-                </MDBox>
-
-                {/* Quick Actions */}
-                <MDBox
-                  p={2}
-                  borderBottom="1px solid"
-                  borderColor="divider"
-                  sx={{
-                    background: "linear-gradient(45deg, #f8fafc 30%, #f1f5f9 90%)",
-                    maxHeight: { xs: "120px", sm: "auto" },
-                    overflowY: "auto",
-                  }}
-                >
-                  <MDTypography variant="body2" color="text" mb={1} fontWeight="medium">
-                    Quick Actions:
-                  </MDTypography>
-                  <MDBox display="flex" gap={1} flexWrap="wrap">
-                    {quickActions.map((action) => (
-                      <MDButton
-                        key={action.label}
-                        variant="gradient"
-                        color="info"
-                        size="small"
-                        onClick={() => handleQuickAction(action)}
-                        startIcon={<Icon>{action.icon}</Icon>}
-                        sx={{
-                          m: 0.5,
-                          background: "linear-gradient(45deg, #4f46e5 30%, #818cf8 90%)",
-                          "&:hover": {
-                            background: "linear-gradient(45deg, #4338ca 30%, #6366f1 90%)",
-                          },
-                          fontSize: { xs: "0.75rem", sm: "0.875rem" },
-                          padding: { xs: "4px 8px", sm: "6px 12px" },
-                        }}
-                      >
-                        {action.label}
-                      </MDButton>
-                    ))}
-                  </MDBox>
-                </MDBox>
-
-                {/* Messages Area */}
-                <MDBox
-                  sx={{
-                    flex: 1,
-                    overflowY: "auto",
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 2,
-                  }}
-                >
-                  {messages.map((msg, index) => (
-                    <MDBox
-                      key={index}
-                      sx={{
-                        display: "flex",
-                        justifyContent: msg.type === "user" ? "flex-end" : "flex-start",
-                        width: "100%",
-                      }}
-                    >
-                      <MDBox
-                        sx={{
-                          maxWidth: "80%",
-                          p: 2,
-                          borderRadius: 2,
-                          backgroundColor: msg.type === "user" ? "primary.main" : "grey.100",
-                          color: msg.type === "user" ? "white" : "text.primary",
-                          whiteSpace: "pre-wrap",
-                        }}
-                      >
-                        <MDTypography variant="body2">{msg.content}</MDTypography>
-                      </MDBox>
-                    </MDBox>
-                  ))}
-                  {isLoading && (
+                  {message.type === "user" && (
                     <MDBox
                       sx={{
+                        position: "absolute",
+                        right: "-8px",
+                        bottom: "-8px",
+                        backgroundColor: "#E8F5E9",
+                        borderRadius: "50%",
+                        width: "16px",
+                        height: "16px",
                         display: "flex",
-                        justifyContent: "flex-start",
-                        width: "100%",
+                        alignItems: "center",
+                        justifyContent: "center",
                       }}
                     >
-                      <MDBox
-                        sx={{
-                          maxWidth: "80%",
-                          p: 2,
-                          borderRadius: 2,
-                          backgroundColor: "grey.100",
-                        }}
-                      >
-                        <MDTypography variant="body2">Thinking...</MDTypography>
-                      </MDBox>
+                      <Icon sx={{ fontSize: "12px", color: "#2E7D32" }}>person</Icon>
                     </MDBox>
                   )}
-                  <div ref={messagesEndRef} />
-                </MDBox>
-
-                {/* Input Area */}
-                <MDBox
-                  p={2}
-                  borderTop="1px solid"
-                  borderColor="divider"
-                  sx={{
-                    background: "white",
-                  }}
-                >
-                  <MDBox display="flex" gap={1}>
-                    <MDInput
-                      fullWidth
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      onKeyPress={handleKeyPress}
-                      placeholder={
-                        selectedSubject ? `Ask about ${selectedSubject}...` : "Type your message..."
-                      }
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: 2,
-                        },
-                      }}
-                      multiline
-                      maxRows={3}
-                    />
-                    <IconButton
-                      color="primary"
-                      onClick={handleSendMessage}
-                      disabled={!message.trim() || isLoading}
-                      sx={{
-                        backgroundColor: "primary.main",
-                        color: "white",
-                        "&:hover": {
-                          backgroundColor: "primary.dark",
-                        },
-                        height: "fit-content",
-                        alignSelf: "flex-end",
-                      }}
-                    >
-                      <SendIcon />
-                    </IconButton>
-                  </MDBox>
                 </MDBox>
               </MDBox>
-            </Card>
-          </Grid>
-        </Grid>
+            ))}
+          </MDBox>
+
+          <MDBox
+            sx={{
+              display: "flex",
+              gap: 1,
+              px: { xs: 1, sm: 0 },
+            }}
+          >
+            <MDInput
+              type="text"
+              placeholder="Ask a question..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyPress={handleKeyPress}
+              sx={{
+                flex: 1,
+                backgroundColor: "white",
+                borderRadius: "8px",
+                "& .MuiInputBase-input": {
+                  color: "dark",
+                },
+                "& .MuiInputLabel-root": {
+                  color: "dark",
+                },
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "rgba(0, 0, 0, 0.2)",
+                },
+                "&:hover .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "rgba(0, 0, 0, 0.3)",
+                },
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "rgba(0, 0, 0, 0.4)",
+                },
+              }}
+            />
+            <MDButton
+              variant="gradient"
+              color="info"
+              onClick={handleSendMessage}
+              disabled={!message.trim() || isLoading}
+              sx={{
+                borderRadius: "8px",
+                minWidth: "auto",
+                px: 2,
+                py: 1,
+              }}
+            >
+              <Icon>send</Icon>
+            </MDButton>
+          </MDBox>
+        </MDBox>
       </MDBox>
       <Footer />
     </DashboardLayout>

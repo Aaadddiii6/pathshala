@@ -49,13 +49,20 @@ function DashboardLayout({ children }) {
   return (
     <MDBox
       sx={({ breakpoints, transitions }) => ({
-        p: 3,
+        p: { xs: 1, sm: 2, md: 3 },
         position: "relative",
         background: "transparent",
         transition: transitions.create(["margin-left", "margin-right"], {
           easing: transitions.easing.easeInOut,
           duration: transitions.duration.standard,
         }),
+        width: "100%",
+        maxWidth: "100%",
+        margin: "0 auto",
+        "& > *": {
+          width: "100%",
+          maxWidth: "100%",
+        },
       })}
     >
       {children}

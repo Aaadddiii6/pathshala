@@ -86,20 +86,52 @@ function ChemistryQuiz() {
   };
 
   const getOptionStyle = (optionIndex) => {
-    if (!showResult) return {};
+    if (!showResult) {
+      return {
+        color: "#000000",
+        borderColor: "#E6E6FA",
+        backgroundColor: "#FFFFFF",
+        "&:hover": {
+          backgroundColor: "#F5F5F5",
+          borderColor: "#E6E6FA",
+        },
+      };
+    }
 
     if (optionIndex === questions[currentQuestion].correctAnswer) {
-      return { backgroundColor: "rgba(76, 175, 80, 0.2)" };
+      return {
+        backgroundColor: "#4CAF50 !important",
+        borderColor: "#4CAF50 !important",
+        color: "#FFFFFF !important",
+        boxShadow: "0 4px 8px rgba(76, 175, 80, 0.3) !important",
+        "&:hover": {
+          backgroundColor: "#45a049 !important",
+          boxShadow: "0 6px 12px rgba(76, 175, 80, 0.4) !important",
+        },
+      };
     }
 
     if (
       optionIndex === selectedAnswer &&
       optionIndex !== questions[currentQuestion].correctAnswer
     ) {
-      return { backgroundColor: "rgba(244, 67, 54, 0.2)" };
+      return {
+        backgroundColor: "#F44336 !important",
+        borderColor: "#F44336 !important",
+        color: "#FFFFFF !important",
+        boxShadow: "0 4px 8px rgba(244, 67, 54, 0.3) !important",
+        "&:hover": {
+          backgroundColor: "#da190b !important",
+          boxShadow: "0 6px 12px rgba(244, 67, 54, 0.4) !important",
+        },
+      };
     }
 
-    return {};
+    return {
+      color: "#000000",
+      borderColor: "#E6E6FA",
+      backgroundColor: "#FFFFFF",
+    };
   };
 
   return (
@@ -146,16 +178,17 @@ function ChemistryQuiz() {
                         onClick={() => handleAnswerSelect(index)}
                         disabled={showResult}
                         sx={{
-                          color: "#E6E6FA",
-                          borderColor: "rgba(255, 255, 255, 0.3)",
-                          backgroundColor: "rgba(255, 255, 255, 0.1)",
                           ...getOptionStyle(index),
-                          "&:hover": {
-                            borderColor: "rgba(255, 255, 255, 0.5)",
-                            backgroundColor: "rgba(255, 255, 255, 0.2)",
-                          },
+                          padding: "12px 24px",
+                          fontSize: "1.1rem",
+                          fontWeight: "600",
+                          textTransform: "none",
+                          transition: "all 0.3s ease",
+                          borderWidth: "2px",
                           "&.Mui-disabled": {
-                            backgroundColor: "rgba(255, 255, 255, 0.05)",
+                            backgroundColor: "#FFFFFF !important",
+                            color: "#000000 !important",
+                            borderColor: "#E6E6FA !important",
                           },
                         }}
                       >

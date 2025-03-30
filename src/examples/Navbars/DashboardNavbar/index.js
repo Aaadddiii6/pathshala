@@ -154,7 +154,14 @@ function DashboardNavbar({ absolute, light, isMini }) {
             <MDBox pr={1}>
               <MDInput label="Search here" />
             </MDBox>
-            <MDBox color={light ? "white" : "inherit"}>
+            <MDBox
+              color={light ? "white" : "inherit"}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
               <IconButton
                 size="small"
                 disableRipple
@@ -163,22 +170,6 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 onClick={handleLogout}
               >
                 <Icon sx={iconsStyle}>logout</Icon>
-              </IconButton>
-              <Link to="/authentication/sign-in/basic">
-                <IconButton sx={navbarIconButton} size="small" disableRipple>
-                  <Icon sx={iconsStyle}>account_circle</Icon>
-                </IconButton>
-              </Link>
-              <IconButton
-                size="small"
-                disableRipple
-                color="inherit"
-                sx={navbarMobileMenu}
-                onClick={handleMiniSidenav}
-              >
-                <Icon sx={iconsStyle} fontSize="medium">
-                  {miniSidenav ? "menu_open" : "menu"}
-                </Icon>
               </IconButton>
               <IconButton
                 size="small"
@@ -193,15 +184,13 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 size="small"
                 disableRipple
                 color="inherit"
-                sx={navbarIconButton}
-                aria-controls="notification-menu"
-                aria-haspopup="true"
-                variant="contained"
-                onClick={handleOpenMenu}
+                sx={navbarMobileMenu}
+                onClick={handleMiniSidenav}
               >
-                <Icon sx={iconsStyle}>notifications</Icon>
+                <Icon sx={iconsStyle} fontSize="medium">
+                  {miniSidenav ? "menu_open" : "menu"}
+                </Icon>
               </IconButton>
-              {renderMenu()}
             </MDBox>
           </MDBox>
         )}

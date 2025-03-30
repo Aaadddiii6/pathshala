@@ -92,10 +92,10 @@ function SignUp() {
     localStorage.setItem("userProfile", JSON.stringify(userProfile));
 
     // Login user and save profile
-    login(userProfile);
+    login(userProfile, "student");
 
-    // Navigate to dashboard
-    navigate("/dashboard");
+    // Navigate to profile page instead of dashboard
+    navigate("/profile");
   };
 
   return (

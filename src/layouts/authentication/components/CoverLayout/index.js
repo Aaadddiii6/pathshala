@@ -96,6 +96,9 @@ function CoverLayout({ color, header, title, description, image, top, children }
             "&:hover": {
               backgroundColor: "rgba(255, 255, 255, 0.9)",
             },
+            position: "fixed",
+            right: "20px",
+            top: "20px",
           }}
         >
           <Icon>account_circle</Icon>

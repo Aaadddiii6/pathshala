@@ -65,7 +65,7 @@ const routes = [
     type: "route",
     name: "Sign Up",
     key: "sign-up",
-    route: "/",
+    route: "/authentication/sign-up",
     component: <SignUp />,
   },
   {
@@ -98,8 +98,8 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Student Dashboard",
-    key: "student-dashboard",
+    name: "Dashboard",
+    key: "dashboard",
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/dashboard",
     component: <Dashboard />,

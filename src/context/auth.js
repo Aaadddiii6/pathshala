@@ -14,6 +14,11 @@ export const AuthProvider = ({ children }) => {
     return savedProfile ? JSON.parse(savedProfile) : null;
   });
 
+  const [userType, setUserType] = useState(() => {
+    const savedType = localStorage.getItem("userType");
+    return savedType || null;
+  });
+
   useEffect(() => {
     localStorage.setItem("isAuthenticated", isAuthenticated);
   }, [isAuthenticated]);
@@ -26,16 +31,38 @@ export const AuthProvider = ({ children }) => {
     }
   }, [userProfile]);
 
-  const login = (profileData) => {
+  useEffect(() => {
+    if (userType) {
+      localStorage.setItem("userType", userType);
+    } else {
+      localStorage.removeItem("userType");
+    }
+  }, [userType]);
+
+  const login = (profileData, type) => {
     setIsAuthenticated(true);
     if (profileData) {
       setUserProfile(profileData);
+    }
+    if (type) {
+      setUserType(type);
+    }
+    localStorage.setItem("isAuthenticated", "true");
+    if (profileData) {
+      localStorage.setItem("userProfile", JSON.stringify(profileData));
+    }
+    if (type) {
+      localStorage.setItem("userType", type);
     }
   };
 
   const logout = () => {
     setIsAuthenticated(false);
     setUserProfile(null);
+    setUserType(null);
+    localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("userProfile");
+    localStorage.removeItem("userType");
   };
 
   const updateProfile = (profileData) => {
@@ -43,7 +70,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, userProfile, login, logout, updateProfile }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, userProfile, userType, login, logout, updateProfile }}
+    >
       {children}
     </AuthContext.Provider>
   );

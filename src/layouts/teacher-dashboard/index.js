@@ -62,6 +62,7 @@ function TeacherDashboard() {
                 amount: "+5",
                 label: t("dashboard.hoursThisWeek"),
               }}
+              sx={{ height: "100%", minHeight: "140px" }}
             />
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
@@ -74,6 +75,7 @@ function TeacherDashboard() {
                 amount: "+12",
                 label: t("dashboard.newStudents"),
               }}
+              sx={{ height: "100%", minHeight: "140px" }}
             />
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
@@ -87,6 +89,7 @@ function TeacherDashboard() {
                 amount: "+8%",
                 label: t("dashboard.thanLastMonth"),
               }}
+              sx={{ height: "100%", minHeight: "140px" }}
             />
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
@@ -100,6 +103,7 @@ function TeacherDashboard() {
                 amount: "Today",
                 label: t("dashboard.classes"),
               }}
+              sx={{ height: "100%", minHeight: "140px" }}
             />
           </Grid>
         </Grid>

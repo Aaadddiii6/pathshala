@@ -13,9 +13,10 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "context/auth";
 import { useNavigate } from "react-router-dom";
+import React from "react";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -57,24 +58,31 @@ import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
 
 function Profile() {
-  const { userProfile } = useAuth();
+  const { userProfile, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  if (!userProfile) {
-    navigate("/authentication/sign-in");
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/authentication/sign-in");
+    }
+  }, [isAuthenticated, navigate]);
+
+  // Create a default user profile if none exists
+  const [currentUser] = useState({
+    name: userProfile?.name || "Anubhav Kumar",
+    role: userProfile?.education || "Student Class 11th",
+    email: userProfile?.email || "anubhav.kumar@rsbv.edu.in",
+    phone: userProfile?.phone || "+91 98765 43210",
+    location: userProfile?.address || "RSBV School, Delhi",
+    bio: `A passionate student interested in ${
+      userProfile?.interests?.join(", ") || "Physics, Chemistry, and Mathematics"
+    }. ${userProfile?.education ? `Currently pursuing ${userProfile.education}.` : ""}`,
+  });
+
+  // If not authenticated, show loading or redirect
+  if (!isAuthenticated) {
     return null;
   }
-
-  const [currentUser] = useState({
-    name: userProfile.name || "User",
-    role: userProfile.education || "Student",
-    email: userProfile.email || "user@example.com",
-    phone: userProfile.phone || "Not provided",
-    location: userProfile.address || "Not provided",
-    bio: `A passionate student interested in ${
-      userProfile.interests?.join(", ") || "various subjects"
-    }. ${userProfile.education ? `Currently pursuing ${userProfile.education}.` : ""}`,
-  });
 
   const [connections] = useState([
     {
@@ -117,7 +125,7 @@ function Profile() {
         background: "white",
         borderRadius: "10px",
         boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-        p: 2,
+        p: { xs: 1.5, sm: 2 },
         height: "100%",
         display: "flex",
         flexDirection: "column",
@@ -128,24 +136,41 @@ function Profile() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: "120px",
-          mb: 2,
+          height: { xs: "80px", sm: "120px" },
+          mb: { xs: 1, sm: 2 },
           color: "primary.main",
         }}
       >
-        {icon}
+        {React.cloneElement(icon, {
+          sx: { fontSize: { xs: 40, sm: 60 } },
+        })}
       </Box>
-      <MDTypography variant="caption" color="text" fontWeight="medium">
+      <MDTypography
+        variant="caption"
+        color="text"
+        fontWeight="medium"
+        sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
+      >
         {label}
       </MDTypography>
-      <MDTypography variant="h6" fontWeight="bold" mb={1}>
+      <MDTypography
+        variant="h6"
+        fontWeight="bold"
+        mb={1}
+        sx={{ fontSize: { xs: "1rem", sm: "1.25rem" } }}
+      >
         {title}
       </MDTypography>
-      <MDTypography variant="body2" color="text" mb={2}>
+      <MDTypography
+        variant="body2"
+        color="text"
+        mb={2}
+        sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
+      >
         {description}
       </MDTypography>
       <MDBox sx={{ mt: "auto" }}>
-        <MDBox display="flex" alignItems="center" mb={2}>
+        <MDBox display="flex" alignItems="center" mb={1}>
           {authors.map((author, index) => (
             <MDBox
               key={index}
@@ -165,8 +190,8 @@ function Profile() {
           color="info"
           sx={{
             width: "100%",
-            py: 1,
-            px: 2,
+            py: { xs: 0.5, sm: 1 },
+            px: { xs: 1, sm: 2 },
             borderRadius: "5px",
             border: "none",
             cursor: "pointer",
@@ -175,7 +200,11 @@ function Profile() {
             },
           }}
         >
-          <MDTypography variant="button" color="white">
+          <MDTypography
+            variant="button"
+            color="white"
+            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
+          >
             Read More
           </MDTypography>
         </MDBox>
@@ -199,15 +228,22 @@ function Profile() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox mb={2} />
+      <MDBox mb={0} />
       <Header>
-        <MDBox mt={5} mb={3}>
-          <Grid container spacing={1}>
+        <MDBox mt={0} mb={3} px={{ xs: 0, sm: 2 }}>
+          <Grid container spacing={{ xs: 1, sm: 2 }}>
             <Grid item xs={12} md={6} xl={4}>
               <PlatformSettings />
             </Grid>
             <Grid item xs={12} md={6} xl={4} sx={{ display: "flex" }}>
-              <Divider orientation="vertical" sx={{ ml: -2, mr: 1 }} />
+              <Divider
+                orientation="vertical"
+                sx={{
+                  ml: -2,
+                  mr: 1,
+                  display: { xs: "none", md: "block" },
+                }}
+              />
               <ProfileInfoCard
                 title="profile information"
                 description={currentUser.bio}
@@ -237,14 +273,20 @@ function Profile() {
                 action={{ route: "", tooltip: "Edit Profile" }}
                 shadow={false}
               />
-              <Divider orientation="vertical" sx={{ mx: 0 }} />
+              <Divider
+                orientation="vertical"
+                sx={{
+                  mx: 0,
+                  display: { xs: "none", md: "block" },
+                }}
+              />
             </Grid>
             <Grid item xs={12} xl={4}>
               <ProfilesList title="conversations" profiles={profilesListData} shadow={false} />
             </Grid>
           </Grid>
         </MDBox>
-        <MDBox pt={2} px={2} lineHeight={1.25}>
+        <MDBox pt={2} px={{ xs: 0, sm: 2 }} lineHeight={1.25}>
           <MDTypography variant="h6" fontWeight="medium">
             Most Read Books
           </MDTypography>
@@ -254,11 +296,11 @@ function Profile() {
             </MDTypography>
           </MDBox>
         </MDBox>
-        <MDBox p={2}>
-          <Grid container spacing={6}>
-            <Grid item xs={12} md={6} xl={3}>
+        <MDBox p={{ xs: 0, sm: 2 }}>
+          <Grid container spacing={{ xs: 1, sm: 2, md: 3, xl: 4 }}>
+            <Grid item xs={6} sm={6} md={6} xl={3}>
               <BookCard
-                icon={<ScienceIcon sx={{ fontSize: 60 }} />}
+                icon={<ScienceIcon />}
                 label="Physics"
                 title="Fundamentals of Physics"
                 description="Essential textbook for Class 11th Physics covering mechanics, thermodynamics, and modern physics."
@@ -268,9 +310,9 @@ function Profile() {
                 ]}
               />
             </Grid>
-            <Grid item xs={12} md={6} xl={3}>
+            <Grid item xs={6} sm={6} md={6} xl={3}>
               <BookCard
-                icon={<ChemistryIcon sx={{ fontSize: 60 }} />}
+                icon={<ChemistryIcon />}
                 label="Chemistry"
                 title="Organic Chemistry"
                 description="Comprehensive guide to organic chemistry concepts and reactions for advanced learners."
@@ -280,9 +322,9 @@ function Profile() {
                 ]}
               />
             </Grid>
-            <Grid item xs={12} md={6} xl={3}>
+            <Grid item xs={6} sm={6} md={6} xl={3}>
               <BookCard
-                icon={<FunctionsIcon sx={{ fontSize: 60 }} />}
+                icon={<FunctionsIcon />}
                 label="Mathematics"
                 title="Advanced Calculus"
                 description="In-depth coverage of calculus topics including limits, derivatives, and integrals."
@@ -292,9 +334,9 @@ function Profile() {
                 ]}
               />
             </Grid>
-            <Grid item xs={12} md={6} xl={3}>
+            <Grid item xs={6} sm={6} md={6} xl={3}>
               <BookCard
-                icon={<BiotechIcon sx={{ fontSize: 60 }} />}
+                icon={<BiotechIcon />}
                 label="Biology"
                 title="Cell Biology"
                 description="Detailed exploration of cell structure, function, and molecular biology concepts."

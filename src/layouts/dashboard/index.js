@@ -1,4 +1,6 @@
 import Grid from "@mui/material/Grid";
+import Card from "@mui/material/Card";
+import Icon from "@mui/material/Icon";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -50,56 +52,61 @@ function Dashboard() {
           px: { xs: 1, sm: 2, md: 3 },
         }}
       >
-        <Grid container spacing={{ xs: 2, sm: 3 }}>
-          <Grid item xs={12} md={6} lg={3}>
+        <Grid container spacing={{ xs: 1, sm: 2 }}>
+          <Grid item xs={6} sm={6} md={3}>
             <ComplexStatisticsCard
               color="dark"
               icon="weekend"
-              title={t("dashboard.studyHours")}
-              count="12"
+              title="Study Hours"
+              count="15:21"
               percentage={{
                 color: "success",
                 amount: "+12%",
-                label: t("dashboard.hoursThisWeek"),
+                label: "This Week",
               }}
+              sx={{ height: "100%", minHeight: "140px" }}
             />
           </Grid>
-          <Grid item xs={12} md={6} lg={3}>
+          <Grid item xs={6} sm={6} md={3}>
             <ComplexStatisticsCard
               icon="leaderboard"
-              title={t("dashboard.classesTaken")}
+              title="Classes Taken"
               count="8"
               percentage={{
                 color: "success",
                 amount: "+2",
-                label: t("dashboard.thisWeek"),
+                label: "This Week",
               }}
+              sx={{ height: "100%", minHeight: "140px" }}
             />
           </Grid>
-          <Grid item xs={12} md={6} lg={3}>
+          <Grid item xs={6} sm={6} md={3}>
             <ComplexStatisticsCard
               color="success"
               icon="store"
-              title={t("dashboard.avgTestScores")}
+              title="Average Test Score"
               count="85%"
               percentage={{
                 color: "success",
                 amount: "+14%",
-                label: t("dashboard.thanLastMonth"),
+                label: "vs Last Month",
+                sx: { display: { xs: "none", sm: "block" } },
               }}
+              sx={{ height: "100%", minHeight: "140px" }}
             />
           </Grid>
-          <Grid item xs={12} md={6} lg={3}>
+          <Grid item xs={6} sm={6} md={3}>
             <ComplexStatisticsCard
               color="primary"
               icon="person_add"
-              title={t("dashboard.rank")}
+              title="Rank"
               count="12"
               percentage={{
                 color: "success",
                 amount: "+3",
-                label: t("dashboard.spotsUp"),
+                label: "Spots Up",
               }}
+              sx={{ height: "100%", minHeight: "140px" }}
             />
           </Grid>
         </Grid>

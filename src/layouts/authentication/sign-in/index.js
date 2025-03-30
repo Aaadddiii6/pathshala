@@ -55,7 +55,7 @@ function SignIn() {
     e.preventDefault();
     // Here you would typically validate credentials
     // For now, we'll just log in
-    login();
+    login(null, "student");
     navigate("/dashboard");
   };
 

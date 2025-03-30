@@ -16,7 +16,7 @@ Coded by www.creative-tim.com
 import { useState, useEffect, useMemo } from "react";
 
 // react-router components
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 
 // @mui material components
 import { ThemeProvider } from "@mui/material/styles";
@@ -48,7 +48,7 @@ import routes from "routes";
 
 // Material Dashboard 2 React contexts
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
-import { AuthProvider } from "context/auth";
+import { AuthProvider, useAuth } from "context/auth";
 
 // Images
 import brandWhite from "assets/images/logo-ct.png";
@@ -56,7 +56,8 @@ import brandDark from "assets/images/logo-ct-dark.png";
 import bgImage from "assets/images/v960-ning-05.jpg";
 import ARView from "layouts/ar-view";
 
-export default function App() {
+// Separate component for auth-dependent content
+function AppContent() {
   const [controller, dispatch] = useMaterialUIController();
   const {
     miniSidenav,
@@ -71,6 +72,8 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
+  const { userType, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   // Cache for the rtl
   useMemo(() => {
@@ -111,6 +114,31 @@ export default function App() {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
+
+  // Check if the current path is an auth route
+  const isAuthRoute = pathname.startsWith("/authentication");
+
+  // If user is not authenticated and trying to access protected routes, redirect to appropriate sign-in
+  useEffect(() => {
+    if (!isAuthenticated && !isAuthRoute) {
+      if (userType === "student") {
+        navigate("/authentication/sign-in");
+      } else if (userType === "teacher") {
+        navigate("/authentication/teacher-sign-in");
+      }
+    }
+  }, [isAuthenticated, isAuthRoute, userType, navigate]);
+
+  // If user is authenticated and trying to access auth routes, redirect to appropriate dashboard
+  useEffect(() => {
+    if (isAuthenticated && isAuthRoute) {
+      if (userType === "student") {
+        navigate("/dashboard");
+      } else if (userType === "teacher") {
+        navigate("/teacher-dashboard");
+      }
+    }
+  }, [isAuthenticated, isAuthRoute, userType, navigate]);
 
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
@@ -161,131 +189,73 @@ export default function App() {
     </MDBox>
   );
 
-  const isAuthRoute = pathname.startsWith("/authentication/");
-
   return (
-    <AuthProvider>
-      {direction === "rtl" ? (
-        <CacheProvider value={rtlCache}>
-          <ThemeProvider theme={darkMode ? themeDarkRTL : themeRTL}>
-            <CssBaseline />
-            <MDBox
-              sx={{
-                position: "relative",
-                backgroundImage: `url(${bgImage})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-                minHeight: "100vh",
-              }}
-            >
-              {!pathname.includes("/authentication") && pathname !== "/" && (
-                <Sidenav
-                  color={sidenavColor}
-                  brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-                  brandName="Pathshala"
-                  routes={routes}
-                  onMouseEnter={handleOnMouseEnter}
-                  onMouseLeave={handleOnMouseLeave}
-                />
-              )}
-              <MDBox
-                sx={({ breakpoints }) => ({
-                  minHeight: "100vh",
-                  position: "relative",
-                  marginLeft: !pathname.includes("/authentication")
-                    ? miniSidenav
-                      ? "120px"
-                      : "274px"
-                    : "0",
-                  transition: "all 0.3s ease-in-out",
-                  padding: "16px",
-                  [breakpoints.down("sm")]: {
-                    marginLeft: "0",
-                    padding: "8px",
-                  },
-                  [breakpoints.down("md")]: {
-                    marginLeft: "0",
-                    padding: "12px",
-                  },
-                })}
-              >
-                {layout === "dashboard" && !isAuthRoute && (
-                  <>
-                    <Configurator />
-                    {configsButton}
-                  </>
-                )}
-                {layout === "vr" && <Configurator />}
-                <Routes>
-                  {getRoutes(routes)}
-                  <Route path="/ar-view/:id" element={<ARView />} />
-                  <Route path="*" element={<Navigate to="/dashboard" />} />
-                </Routes>
-              </MDBox>
-            </MDBox>
-          </ThemeProvider>
-        </CacheProvider>
-      ) : (
-        <ThemeProvider theme={darkMode ? themeDark : theme}>
-          <CssBaseline />
-          <MDBox
-            sx={{
-              position: "relative",
-              backgroundImage: `url(${bgImage})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-              minHeight: "100vh",
-            }}
-          >
-            {!pathname.includes("/authentication") && pathname !== "/" && (
-              <Sidenav
-                color={sidenavColor}
-                brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-                brandName="Pathshala"
-                routes={routes}
-                onMouseEnter={handleOnMouseEnter}
-                onMouseLeave={handleOnMouseLeave}
-              />
-            )}
-            <MDBox
-              sx={({ breakpoints }) => ({
-                minHeight: "100vh",
-                position: "relative",
-                marginLeft: !pathname.includes("/authentication")
-                  ? miniSidenav
-                    ? "120px"
-                    : "274px"
-                  : "0",
-                transition: "all 0.3s ease-in-out",
-                padding: "16px",
-                [breakpoints.down("sm")]: {
-                  marginLeft: "0",
-                  padding: "8px",
-                },
-                [breakpoints.down("md")]: {
-                  marginLeft: "0",
-                  padding: "12px",
-                },
-              })}
-            >
-              {layout === "dashboard" && !isAuthRoute && (
-                <>
-                  <Configurator />
-                  {configsButton}
-                </>
-              )}
-              {layout === "vr" && <Configurator />}
-              <Routes>
-                {getRoutes(routes)}
-                <Route path="/ar-view/:id" element={<ARView />} />
-                <Route path="*" element={<Navigate to="/dashboard" />} />
-              </Routes>
-            </MDBox>
-          </MDBox>
-        </ThemeProvider>
+    <MDBox
+      sx={{
+        position: "relative",
+        backgroundImage: `url(${bgImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        minHeight: "100vh",
+      }}
+    >
+      {!pathname.includes("/authentication") && pathname !== "/" && (
+        <Sidenav
+          color={sidenavColor}
+          brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
+          brandName="Pathshala"
+          routes={routes}
+          onMouseEnter={handleOnMouseEnter}
+          onMouseLeave={handleOnMouseLeave}
+        />
       )}
-    </AuthProvider>
+      <MDBox
+        sx={({ breakpoints }) => ({
+          minHeight: "100vh",
+          position: "relative",
+          marginLeft: !pathname.includes("/authentication")
+            ? miniSidenav
+              ? "120px"
+              : "274px"
+            : "0",
+          transition: "all 0.3s ease-in-out",
+          padding: "16px",
+          [breakpoints.down("sm")]: {
+            marginLeft: "0",
+            padding: "8px",
+          },
+          [breakpoints.down("md")]: {
+            marginLeft: "0",
+            padding: "12px",
+          },
+        })}
+      >
+        {layout === "dashboard" && !isAuthRoute && (
+          <>
+            <Configurator />
+            {configsButton}
+          </>
+        )}
+        {layout === "vr" && <Configurator />}
+        <Routes>
+          {getRoutes(routes)}
+          <Route path="/ar-view/:id" element={<ARView />} />
+          <Route path="*" element={<Navigate to="/dashboard" />} />
+        </Routes>
+      </MDBox>
+    </MDBox>
+  );
+}
+
+// Main App component
+export default function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

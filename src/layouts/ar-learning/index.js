@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { MenuItem } from "@mui/material";
 import MDInput from "components/MDInput";
+import MDButton from "components/MDButton";
 
 // Import new images
 import droneImage from "assets/images/drone.png";
@@ -172,28 +173,37 @@ function ARLearning() {
           position: "relative",
           backgroundColor: "white",
           minHeight: "100vh",
-          padding: "20px",
+          padding: { xs: "10px", sm: "20px" },
         }}
       >
         <MDBox
           sx={{
             backgroundColor: "#f8f9fa",
             borderRadius: "15px",
-            padding: "20px",
-            marginBottom: "20px",
+            padding: { xs: "15px", sm: "20px" },
+            marginBottom: { xs: "15px", sm: "20px" },
             boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
           }}
         >
-          <MDTypography variant="h4" color="dark" gutterBottom>
+          <MDTypography
+            variant="h4"
+            color="dark"
+            gutterBottom
+            sx={{ fontSize: { xs: "1.5rem", sm: "2rem" } }}
+          >
             AR Learning Experience
           </MDTypography>
-          <MDTypography variant="body1" color="text" sx={{ mb: 3 }}>
+          <MDTypography
+            variant="body1"
+            color="text"
+            sx={{ mb: 3, fontSize: { xs: "0.875rem", sm: "1rem" } }}
+          >
             Explore interactive 3D models in augmented reality
           </MDTypography>
           <MDBox
             sx={{
               display: "flex",
-              gap: 2,
+              gap: { xs: 1, sm: 2 },
               flexWrap: "wrap",
               alignItems: "center",
               mb: 3,
@@ -207,6 +217,7 @@ function ARLearning() {
               sx={{
                 backgroundColor: "white",
                 borderRadius: "8px",
+                width: { xs: "100%", sm: "auto" },
                 "& .MuiInputBase-input": {
                   color: "dark",
                 },
@@ -224,14 +235,17 @@ function ARLearning() {
                 },
               }}
             />
-            <MDBox sx={{ display: "flex", gap: 2 }}>
+            <MDBox
+              sx={{ display: "flex", gap: { xs: 1, sm: 2 }, width: { xs: "100%", sm: "auto" } }}
+            >
               <MDInput
                 select
                 label="Category"
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 sx={{
-                  minWidth: "150px",
+                  flex: { xs: 1, sm: "auto" },
+                  minWidth: { xs: "auto", sm: "150px" },
                   backgroundColor: "white",
                   borderRadius: "8px",
                   "& .MuiInputBase-input": {
@@ -262,7 +276,8 @@ function ARLearning() {
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
                 sx={{
-                  minWidth: "150px",
+                  flex: { xs: 1, sm: "auto" },
+                  minWidth: { xs: "auto", sm: "150px" },
                   backgroundColor: "white",
                   borderRadius: "8px",
                   "& .MuiInputBase-input": {
@@ -292,87 +307,72 @@ function ARLearning() {
           </MDBox>
         </MDBox>
 
-        <Grid container spacing={3}>
-          {filteredScenarios.map((scenario) => (
-            <Grid item xs={12} sm={6} md={4} key={scenario.id}>
-              <Card
-                sx={{
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  backgroundColor: "white",
-                  borderRadius: "15px",
-                  overflow: "hidden",
-                  transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
-                  "&:hover": {
-                    transform: "translateY(-5px)",
-                    boxShadow: "0 8px 16px rgba(0,0,0,0.1)",
-                  },
-                }}
-              >
-                <CardMedia
-                  component="img"
-                  height="200"
-                  image={scenario.image}
-                  alt={scenario.title}
+        <MDBox py={3}>
+          <Grid container spacing={2}>
+            {filteredScenarios.map((scenario, index) => (
+              <Grid item xs={6} sm={6} md={4} key={index}>
+                <Card
                   sx={{
-                    objectFit: "cover",
-                    borderBottom: "1px solid rgba(0, 0, 0, 0.1)",
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    background: "rgba(255, 255, 255, 0.7)",
+                    backdropFilter: "blur(10px)",
+                    borderRadius: "15px",
+                    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                    border: "1px solid rgba(255, 255, 255, 0.3)",
                   }}
-                />
-                <CardContent sx={{ flexGrow: 1, p: 2 }}>
-                  <MDTypography variant="h6" color="dark" gutterBottom>
-                    {scenario.title}
-                  </MDTypography>
-                  <MDTypography variant="body2" color="text" sx={{ mb: 2 }}>
-                    {scenario.description}
-                  </MDTypography>
-                  <MDBox sx={{ display: "flex", gap: 1, mb: 2 }}>
-                    <Chip
-                      label={scenario.category}
-                      size="small"
-                      sx={{
-                        backgroundColor: "rgba(33, 150, 243, 0.1)",
-                        color: "#2196F3",
-                      }}
-                    />
-                    <Chip
-                      label={scenario.subject}
-                      size="small"
-                      sx={{
-                        backgroundColor: "rgba(33, 150, 243, 0.1)",
-                        color: "#2196F3",
-                      }}
-                    />
-                  </MDBox>
-                </CardContent>
-                <MDBox sx={{ p: 2, pt: 0 }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleARView(scenario.id)}
+                >
+                  <CardMedia
+                    component="img"
+                    height="140"
+                    image={scenario.image}
+                    alt={scenario.title}
                     sx={{
-                      backgroundColor: "#2196F3",
-                      "&:hover": {
-                        backgroundColor: "#1976D2",
-                      },
-                      color: "white",
-                      boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-                      borderRadius: "8px",
-                      padding: "8px 16px",
-                      fontSize: "0.875rem",
-                      fontWeight: 500,
-                      textTransform: "none",
-                      width: "100%",
+                      objectFit: "cover",
+                      borderTopLeftRadius: "15px",
+                      borderTopRightRadius: "15px",
                     }}
-                  >
-                    {isARSupported ? "View in AR" : "View 3D Model"}
-                  </Button>
-                </MDBox>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+                  />
+                  <MDBox p={2}>
+                    <MDTypography
+                      variant="h6"
+                      color="dark"
+                      gutterBottom
+                      sx={{ fontSize: { xs: "0.875rem", sm: "1rem" } }}
+                    >
+                      {scenario.title}
+                    </MDTypography>
+                    <MDTypography
+                      variant="body2"
+                      color="text"
+                      paragraph
+                      sx={{ display: { xs: "none", sm: "block" } }}
+                    >
+                      {scenario.description}
+                    </MDTypography>
+                    <MDBox sx={{ mt: "auto" }}>
+                      <MDButton
+                        variant="gradient"
+                        color="info"
+                        fullWidth
+                        onClick={() => handleARView(scenario.id)}
+                        sx={{
+                          borderRadius: "8px",
+                          textTransform: "none",
+                          fontSize: "0.875rem",
+                          py: 1,
+                        }}
+                      >
+                        View in AR
+                      </MDButton>
+                    </MDBox>
+                  </MDBox>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </MDBox>
       </MDBox>
       <Footer />
     </DashboardLayout>

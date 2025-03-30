@@ -90,22 +90,26 @@ const navbarContainer = ({ breakpoints }) => ({
 const navbarRow = ({ breakpoints }, { isMini }) => ({
   display: "flex",
   alignItems: "center",
-  justifyContent: "space-between",
+  justifyContent: "flex-end",
   width: "100%",
+  gap: 1,
 
   [breakpoints.up("md")]: {
-    justifyContent: isMini ? "space-between" : "stretch",
-    width: isMini ? "100%" : "max-content",
+    justifyContent: "flex-end",
+    width: "auto",
   },
 
   [breakpoints.up("xl")]: {
-    justifyContent: "stretch !important",
-    width: "max-content !important",
+    justifyContent: "flex-end",
+    width: "auto",
   },
 });
 
 const navbarIconButton = ({ typography: { size }, breakpoints }) => ({
   px: 1,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
 
   "& .material-icons, .material-icons-round": {
     fontSize: `${size.xl} !important`,
