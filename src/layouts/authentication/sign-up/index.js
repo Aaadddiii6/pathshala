@@ -16,6 +16,7 @@ Coded by www.creative-tim.com
 // react-router-dom components
 import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -39,16 +40,19 @@ import { useAuth } from "context/auth";
 
 function SignUp() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { login } = useAuth();
   const [formData, setFormData] = useState({
-    fullName: "",
+    name: "",
     email: "",
-    schoolName: "",
-    class: "",
-    stream: "",
     password: "",
     confirmPassword: "",
+    phone: "",
+    address: "",
+    education: "",
+    interests: "",
   });
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -58,142 +62,189 @@ function SignUp() {
     }));
   };
 
-  const handleSignUp = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    // Here you would typically validate the form data
-    // For now, we'll just log in and redirect
-    login();
+    setError("");
+
+    // Basic validation
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return;
+    }
+
+    // Create user profile
+    const userProfile = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      address: formData.address,
+      education: formData.education,
+      interests: formData.interests.split(",").map((interest) => interest.trim()),
+      createdAt: new Date().toISOString(),
+    };
+
+    // Save to localStorage for persistence
+    localStorage.setItem("userProfile", JSON.stringify(userProfile));
+
+    // Login user and save profile
+    login(userProfile);
+
+    // Navigate to dashboard
     navigate("/dashboard");
   };
 
   return (
     <CoverLayout
-      title="Welcome to EduTech"
-      description="Join our learning community and start your educational journey"
-      image={bgImage}
+      header="Join us today"
+      title="Enter your details to register"
+      description="Fill in the form below to create your account"
+      image="https://images.unsplash.com/photo-1497294815431-9365093b7331?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"
+      top={10}
     >
-      <Card sx={{ width: "100%" }}>
+      <Card sx={{ p: 2 }}>
         <MDBox
           variant="gradient"
           bgColor="info"
           borderRadius="lg"
           coloredShadow="info"
-          mx={2}
-          mt={-3}
           p={2}
           mb={1}
           textAlign="center"
         >
-          <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Student Sign Up
+          <MDTypography variant="h5" fontWeight="medium" color="white">
+            Join us today
           </MDTypography>
-          <MDTypography display="block" variant="button" color="white" my={1}>
-            Enter your details to get started
+          <MDTypography variant="button" color="white" fontSize="0.875rem">
+            Enter your details to register
           </MDTypography>
         </MDBox>
-        <MDBox pt={3} pb={2} px={3}>
-          <MDBox component="form" role="form" onSubmit={handleSignUp}>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <MDInput
-                  type="text"
-                  label="Full Name"
-                  fullWidth
-                  placeholder="Enter your full name"
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <MDInput
-                  type="email"
-                  label="Email"
-                  fullWidth
-                  placeholder="Enter your email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <MDInput
-                  type="text"
-                  label="School Name"
-                  fullWidth
-                  placeholder="Enter your school name"
-                  name="schoolName"
-                  value={formData.schoolName}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <MDInput
-                  type="text"
-                  label="Class"
-                  fullWidth
-                  placeholder="Enter your class"
-                  name="class"
-                  value={formData.class}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <MDInput
-                  type="text"
-                  label="Stream"
-                  fullWidth
-                  placeholder="Enter your stream"
-                  name="stream"
-                  value={formData.stream}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <MDInput
-                  type="password"
-                  label="Password"
-                  fullWidth
-                  placeholder="Create a password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <MDInput
-                  type="password"
-                  label="Confirm Password"
-                  fullWidth
-                  placeholder="Confirm your password"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                />
-              </Grid>
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={1}>
+            <Grid item xs={12}>
+              <MDInput
+                type="text"
+                label="Name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                fullWidth
+                required
+                size="small"
+              />
             </Grid>
-            <MDBox display="flex" alignItems="center" mt={2} mb={2}>
-              <MDTypography variant="button" color="text" fontWeight="regular">
-                Already have an account?{" "}
-                <MDTypography
-                  component={Link}
-                  to="/authentication/sign-in"
-                  variant="button"
-                  color="info"
-                  fontWeight="medium"
-                  textGradient
-                >
-                  Sign In
-                </MDTypography>
-              </MDTypography>
-            </MDBox>
-            <MDBox mt={3} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
-                Sign Up
-              </MDButton>
-            </MDBox>
+            <Grid item xs={12}>
+              <MDInput
+                type="email"
+                label="Email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                fullWidth
+                required
+                size="small"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <MDInput
+                type="password"
+                label="Password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                fullWidth
+                required
+                size="small"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <MDInput
+                type="password"
+                label="Confirm Password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                fullWidth
+                required
+                size="small"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <MDInput
+                type="tel"
+                label="Phone"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                fullWidth
+                size="small"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <MDInput
+                type="text"
+                label="Education"
+                name="education"
+                value={formData.education}
+                onChange={handleChange}
+                fullWidth
+                size="small"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <MDInput
+                type="text"
+                label="Address"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                fullWidth
+                size="small"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <MDInput
+                type="text"
+                label="Interests (comma-separated)"
+                name="interests"
+                value={formData.interests}
+                onChange={handleChange}
+                fullWidth
+                size="small"
+              />
+            </Grid>
+          </Grid>
+          {error && (
+            <MDTypography variant="caption" color="error" display="block" mt={1}>
+              {error}
+            </MDTypography>
+          )}
+          <MDBox mt={2} mb={1}>
+            <MDButton type="submit" variant="gradient" color="info" fullWidth size="small">
+              Sign Up
+            </MDButton>
           </MDBox>
-        </MDBox>
+          <MDBox mt={1} mb={1} textAlign="center">
+            <MDTypography variant="button" color="text" fontSize="0.875rem">
+              Already have an account?{" "}
+              <MDTypography
+                component="a"
+                href="/authentication/sign-in"
+                variant="button"
+                color="info"
+                fontWeight="medium"
+                textGradient
+                fontSize="0.875rem"
+              >
+                Sign In
+              </MDTypography>
+            </MDTypography>
+          </MDBox>
+        </form>
       </Card>
     </CoverLayout>
   );

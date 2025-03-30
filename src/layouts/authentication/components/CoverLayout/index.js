@@ -55,7 +55,7 @@ function CoverLayout({ color, header, title, description, image, top, children }
       <MDBox
         position="absolute"
         width="100%"
-        minHeight="100vh"
+        height="100%"
         sx={{
           backgroundImage: ({ functions: { linearGradient, rgba }, palette: { gradients } }) =>
             image &&
@@ -77,7 +77,7 @@ function CoverLayout({ color, header, title, description, image, top, children }
       <MDBox
         position="absolute"
         width="100%"
-        minHeight="100vh"
+        height="100%"
         sx={{
           backgroundColor: ({ palette: { black }, functions: { rgba } }) => rgba(black.main, 0.4),
           position: "fixed",
@@ -88,7 +88,7 @@ function CoverLayout({ color, header, title, description, image, top, children }
           zIndex: 1,
         }}
       />
-      <MDBox position="absolute" top={20} right={20} zIndex={3}>
+      <MDBox position="absolute" top={10} right={10} zIndex={3}>
         <IconButton
           onClick={handleClick}
           sx={{
@@ -142,20 +142,28 @@ function CoverLayout({ color, header, title, description, image, top, children }
         display="flex"
         alignItems="center"
         justifyContent="center"
-        minHeight="100vh"
         position="relative"
         zIndex={2}
         sx={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
+          minHeight: "100vh",
+          py: 4,
         }}
       >
-        <Grid container spacing={1} justifyContent="center">
-          <Grid item xs={11} sm={9} md={7} lg={6} xl={5}>
-            {children}
+        <Grid container spacing={0} justifyContent="center">
+          <Grid item xs={11} sm={8} md={6} lg={5} xl={4}>
+            <MDBox
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+              position="relative"
+              zIndex={2}
+              sx={{
+                py: 4,
+              }}
+            >
+              {children}
+            </MDBox>
           </Grid>
         </Grid>
       </MDBox>

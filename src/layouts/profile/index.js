@@ -13,6 +13,10 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
+import { useState } from "react";
+import { useAuth } from "context/auth";
+import { useNavigate } from "react-router-dom";
+
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Divider from "@mui/material/Divider";
@@ -38,7 +42,6 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import ProfileInfoCard from "examples/Cards/InfoCards/ProfileInfoCard";
 import ProfilesList from "examples/Lists/ProfilesList";
-import DefaultProjectCard from "examples/Cards/ProjectCards/DefaultProjectCard";
 
 // Overview page components
 import Header from "layouts/profile/components/Header";
@@ -53,16 +56,24 @@ import team2 from "assets/images/team-2.jpg";
 import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
 
-import { useState } from "react";
+function Profile() {
+  const { userProfile } = useAuth();
+  const navigate = useNavigate();
 
-function Overview() {
+  if (!userProfile) {
+    navigate("/authentication/sign-in");
+    return null;
+  }
+
   const [currentUser] = useState({
-    name: "Anubhav Kumar",
-    role: "Class 11th Student",
-    email: "anubhav.kumar@rsbv.edu.in",
-    phone: "+91 98765 43210",
-    location: "RSBV School, Delhi",
-    bio: "A passionate student of Class 11th at RSBV School, Delhi. Currently pursuing Science stream with Mathematics. Active participant in school's Science Club and Mathematics Olympiad team. Aspires to pursue Engineering in Computer Science. Enjoys solving complex mathematical problems and participating in coding competitions.",
+    name: userProfile.name || "User",
+    role: userProfile.education || "Student",
+    email: userProfile.email || "user@example.com",
+    phone: userProfile.phone || "Not provided",
+    location: userProfile.address || "Not provided",
+    bio: `A passionate student interested in ${
+      userProfile.interests?.join(", ") || "various subjects"
+    }. ${userProfile.education ? `Currently pursuing ${userProfile.education}.` : ""}`,
   });
 
   const [connections] = useState([
@@ -301,4 +312,4 @@ function Overview() {
   );
 }
 
-export default Overview;
+export default Profile;

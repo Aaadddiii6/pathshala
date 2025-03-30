@@ -16,12 +16,10 @@ Coded by www.creative-tim.com
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import SendIcon from "@mui/icons-material/Send";
 import { useState, useRef, useEffect } from "react";
 import Chip from "@mui/material/Chip";
-import Divider from "@mui/material/Divider";
 import Icon from "@mui/material/Icon";
 
 // Material Dashboard 2 React components
@@ -38,8 +36,12 @@ import Footer from "examples/Footer";
 // Gemini AI
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// Initialize Gemini AI
-const genAI = new GoogleGenerativeAI("AIzaSyCS_djVRYxQzHXzvDjooEun-3FXd6zcqsI");
+// Initialize Gemini AI with your API key
+// Note: You should store this in an environment variable in production
+const API_KEY = "AIzaSyDZqWj2MAe2k2EQAiLBl30ZPPjcsOMO7L0";
+const genAI = new GoogleGenerativeAI(API_KEY, {
+  apiVersion: "v1",
+});
 
 const subjects = [
   "Mathematics",
@@ -66,6 +68,7 @@ function Billing() {
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState(null);
+  const [error, setError] = useState(null);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -76,13 +79,29 @@ function Billing() {
     scrollToBottom();
   }, [messages]);
 
+  // Add initial welcome message
+  useEffect(() => {
+    setMessages([
+      {
+        type: "ai",
+        content:
+          "Hello! I'm your AI Study Assistant. How can I help you today? Select a subject or use one of the quick actions to get started.",
+      },
+    ]);
+  }, []);
+
   const handleSendMessage = async () => {
     if (!message.trim()) return;
 
+    const userMessage = message;
+    const context = selectedSubject ? `Context: Helping with ${selectedSubject}. ` : "";
+    const fullPrompt = `${context}${userMessage}`;
+
     // Add user message to chat
-    setMessages((prev) => [...prev, { type: "user", content: message }]);
+    setMessages((prev) => [...prev, { type: "user", content: userMessage }]);
     setMessage("");
     setIsLoading(true);
+    setError(null);
 
     try {
       // Get response from Gemini
@@ -97,24 +116,26 @@ function Billing() {
         safetySettings: [
           {
             category: "HARM_CATEGORY_HARASSMENT",
-            threshold: "BLOCK_NONE",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE",
           },
           {
             category: "HARM_CATEGORY_HATE_SPEECH",
-            threshold: "BLOCK_NONE",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE",
           },
           {
             category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-            threshold: "BLOCK_NONE",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE",
           },
           {
             category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-            threshold: "BLOCK_NONE",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE",
           },
         ],
       });
 
-      const result = await model.generateContent(message);
+      const result = await model.generateContent({
+        contents: [{ role: "user", parts: [{ text: fullPrompt }] }],
+      });
       const response = await result.response;
       const text = response.text();
 
@@ -126,12 +147,22 @@ function Billing() {
       setMessages((prev) => [...prev, { type: "ai", content: text }]);
     } catch (error) {
       console.error("Error getting AI response:", error);
+
+      let errorMessage = "I apologize, but I'm having trouble processing your request.";
+
+      if (error.message && error.message.includes("API key")) {
+        errorMessage = "API key error: Please check your Gemini API key configuration.";
+      } else if (error.message && error.message.includes("quota")) {
+        errorMessage =
+          "API quota exceeded: The daily limit for AI requests has been reached. Please try again later.";
+      }
+
+      setError(errorMessage);
       setMessages((prev) => [
         ...prev,
         {
           type: "ai",
-          content:
-            "I apologize, but I'm having trouble processing your request. Please try again or rephrase your question.",
+          content: errorMessage,
         },
       ]);
     } finally {
@@ -147,9 +178,17 @@ function Billing() {
   };
 
   const handleQuickAction = (action) => {
-    const prompt = `Help me with ${action.label.toLowerCase()}`;
+    const subjectContext = selectedSubject ? ` for ${selectedSubject}` : "";
+    const prompt = `${action.label}${subjectContext}`;
     setMessage(prompt);
-    handleSendMessage();
+    // Use setTimeout to ensure the state updates before sending
+    setTimeout(() => {
+      handleSendMessage();
+    }, 0);
+  };
+
+  const handleSubjectSelect = (subject) => {
+    setSelectedSubject(subject === selectedSubject ? null : subject);
   };
 
   return (
@@ -179,6 +218,11 @@ function Billing() {
                   <MDTypography variant="h6" fontWeight="medium">
                     AI Study Assistant
                   </MDTypography>
+                  {error && (
+                    <MDTypography variant="caption" color="error" fontWeight="regular">
+                      {error}
+                    </MDTypography>
+                  )}
                 </MDBox>
 
                 {/* Subject Selection */}
@@ -201,7 +245,7 @@ function Billing() {
                         key={subject}
                         label={subject}
                         color={selectedSubject === subject ? "primary" : "default"}
-                        onClick={() => setSelectedSubject(subject)}
+                        onClick={() => handleSubjectSelect(subject)}
                         sx={{
                           m: 0.5,
                           "&:hover": {
@@ -280,6 +324,7 @@ function Billing() {
                           borderRadius: 2,
                           backgroundColor: msg.type === "user" ? "primary.main" : "grey.100",
                           color: msg.type === "user" ? "white" : "text.primary",
+                          whiteSpace: "pre-wrap",
                         }}
                       >
                         <MDTypography variant="body2">{msg.content}</MDTypography>
@@ -324,12 +369,16 @@ function Billing() {
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       onKeyPress={handleKeyPress}
-                      placeholder="Type your message..."
+                      placeholder={
+                        selectedSubject ? `Ask about ${selectedSubject}...` : "Type your message..."
+                      }
                       sx={{
                         "& .MuiOutlinedInput-root": {
                           borderRadius: 2,
                         },
                       }}
+                      multiline
+                      maxRows={3}
                     />
                     <IconButton
                       color="primary"
@@ -341,6 +390,8 @@ function Billing() {
                         "&:hover": {
                           backgroundColor: "primary.dark",
                         },
+                        height: "fit-content",
+                        alignSelf: "flex-end",
                       }}
                     >
                       <SendIcon />

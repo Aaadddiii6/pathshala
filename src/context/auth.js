@@ -9,20 +9,41 @@ export const AuthProvider = ({ children }) => {
     return savedAuth === "true";
   });
 
+  const [userProfile, setUserProfile] = useState(() => {
+    const savedProfile = localStorage.getItem("userProfile");
+    return savedProfile ? JSON.parse(savedProfile) : null;
+  });
+
   useEffect(() => {
     localStorage.setItem("isAuthenticated", isAuthenticated);
   }, [isAuthenticated]);
 
-  const login = () => {
+  useEffect(() => {
+    if (userProfile) {
+      localStorage.setItem("userProfile", JSON.stringify(userProfile));
+    } else {
+      localStorage.removeItem("userProfile");
+    }
+  }, [userProfile]);
+
+  const login = (profileData) => {
     setIsAuthenticated(true);
+    if (profileData) {
+      setUserProfile(profileData);
+    }
   };
 
   const logout = () => {
     setIsAuthenticated(false);
+    setUserProfile(null);
+  };
+
+  const updateProfile = (profileData) => {
+    setUserProfile(profileData);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, userProfile, login, logout, updateProfile }}>
       {children}
     </AuthContext.Provider>
   );
