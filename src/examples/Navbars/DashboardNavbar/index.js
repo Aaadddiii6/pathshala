@@ -14,19 +14,15 @@ Coded by www.creative-tim.com
 */
 
 import { useState, useEffect } from "react";
-
-// react-router components
 import { useLocation, Link, useNavigate } from "react-router-dom";
-
-// prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
-
-// @material-ui core components
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import Icon from "@mui/material/Icon";
+import { useTranslation } from "react-i18next";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -60,9 +56,11 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
   const [openMenu, setOpenMenu] = useState(false);
+  const [languageMenu, setLanguageMenu] = useState(null);
   const route = useLocation().pathname.split("/").slice(1);
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const { i18n } = useTranslation();
 
   useEffect(() => {
     // Setting the navbar type
@@ -101,6 +99,19 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
   const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
   const handleCloseMenu = () => setOpenMenu(false);
+
+  const handleLanguageClick = (event) => {
+    setLanguageMenu(event.currentTarget);
+  };
+
+  const handleLanguageClose = () => {
+    setLanguageMenu(null);
+  };
+
+  const changeLanguage = (lang) => {
+    i18n.changeLanguage(lang);
+    handleLanguageClose();
+  };
 
   const handleLogout = () => {
     logout();
@@ -162,6 +173,24 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 gap: 1,
               }}
             >
+              <IconButton
+                size="small"
+                disableRipple
+                color="inherit"
+                sx={navbarIconButton}
+                onClick={handleLanguageClick}
+              >
+                <Icon sx={iconsStyle}>language</Icon>
+              </IconButton>
+              <Menu
+                anchorEl={languageMenu}
+                open={Boolean(languageMenu)}
+                onClose={handleLanguageClose}
+              >
+                <MenuItem onClick={() => changeLanguage("en")}>English</MenuItem>
+                <MenuItem onClick={() => changeLanguage("hi")}>हिंदी</MenuItem>
+                <MenuItem onClick={() => changeLanguage("gu")}>ગુજરાતી</MenuItem>
+              </Menu>
               <IconButton
                 size="small"
                 disableRipple

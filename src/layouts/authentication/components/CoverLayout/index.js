@@ -119,24 +119,9 @@ function CoverLayout({ color, header, title, description, image, top, children }
               Student Sign In
             </MDTypography>
           </MenuItem>
-          <MenuItem component={Link} to="/authentication/sign-up" onClick={handleClose}>
-            <MDTypography variant="button" color="text">
-              Student Sign Up
-            </MDTypography>
-          </MenuItem>
           <MenuItem component={Link} to="/authentication/teacher-sign-in" onClick={handleClose}>
             <MDTypography variant="button" color="text">
               Teacher Sign In
-            </MDTypography>
-          </MenuItem>
-          <MenuItem component={Link} to="/authentication/teacher-sign-up" onClick={handleClose}>
-            <MDTypography variant="button" color="text">
-              Teacher Sign Up
-            </MDTypography>
-          </MenuItem>
-          <MenuItem component={Link} to="/authentication/admin" onClick={handleClose}>
-            <MDTypography variant="button" color="text">
-              Admin Login
             </MDTypography>
           </MenuItem>
         </Menu>

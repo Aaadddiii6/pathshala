@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 
 // react-router components
 import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
@@ -45,6 +45,7 @@ import createCache from "@emotion/cache";
 
 // Material Dashboard 2 React routes
 import routes from "routes";
+import teacherRoutes from "routes/teacherRoutes";
 
 // Material Dashboard 2 React contexts
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
@@ -81,11 +82,9 @@ function AppContent() {
       key: "rtl",
       stylisPlugins: [rtlPlugin],
     });
-
     setRtlCache(cacheRtl);
   }, []);
 
-  // Open sidenav when mouse enter on mini sidenav
   const handleOnMouseEnter = () => {
     if (miniSidenav && !onMouseEnter) {
       setMiniSidenav(dispatch, false);
@@ -93,7 +92,6 @@ function AppContent() {
     }
   };
 
-  // Close sidenav when mouse leave mini sidenav
   const handleOnMouseLeave = () => {
     if (onMouseEnter) {
       setMiniSidenav(dispatch, true);
@@ -101,72 +99,54 @@ function AppContent() {
     }
   };
 
-  // Change the openConfigurator state
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
 
-  // Setting the dir attribute for the body element
   useEffect(() => {
     document.body.setAttribute("dir", direction);
   }, [direction]);
 
-  // Setting page scroll to 0 when changing the route
   useEffect(() => {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
 
-  // Check if the current path is an auth route
   const isAuthRoute = pathname.startsWith("/authentication");
 
-  // Handle authentication and routing
+  // Simplified navigation logic to prevent multiple redirects
   useEffect(() => {
-    // If on root path, redirect to sign-up
-    if (pathname === "/") {
-      navigate("/authentication/sign-up");
-      return;
-    }
-
-    // If user is not authenticated
-    if (!isAuthenticated) {
-      // If already on an auth route, stay there
+    const handleNavigation = () => {
+      // Don't redirect if already on an auth route
       if (isAuthRoute) {
         return;
       }
-      // Otherwise, redirect to sign-up
-      navigate("/authentication/sign-up");
-      return;
-    }
 
-    // If user is authenticated
-    if (isAuthenticated) {
-      // If on an auth route, redirect to appropriate dashboard
-      if (isAuthRoute) {
-        if (userType === "student") {
-          navigate("/dashboard");
-        } else if (userType === "teacher") {
-          navigate("/teacher-dashboard");
+      // If not authenticated, redirect to sign-up
+      if (!isAuthenticated) {
+        navigate("/authentication/student-sign-up", { replace: true });
+        return;
+      }
+
+      // If authenticated but on wrong dashboard
+      if (isAuthenticated && userType) {
+        if (userType === "teacher" && pathname === "/dashboard") {
+          navigate("/teacher-dashboard", { replace: true });
+        } else if (userType === "student" && pathname === "/teacher-dashboard") {
+          navigate("/dashboard", { replace: true });
         }
-        return;
       }
-      // If on dashboard but wrong type, redirect to correct dashboard
-      if (userType === "student" && pathname === "/teacher-dashboard") {
-        navigate("/dashboard");
-      } else if (userType === "teacher" && pathname === "/dashboard") {
-        navigate("/teacher-dashboard");
-      }
-    }
-  }, [isAuthenticated, isAuthRoute, userType, navigate, pathname]);
+    };
+
+    handleNavigation();
+  }, [isAuthenticated, userType, pathname, navigate, isAuthRoute]);
 
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
       if (route.collapse) {
         return (
-          <>
-            {route.route && (
-              <Route exact path={route.route} element={route.component} key={route.key} />
-            )}
+          <React.Fragment key={route.key}>
+            <Route exact path={route.route} element={route.component} />
             {getRoutes(route.collapse)}
-          </>
+          </React.Fragment>
         );
       }
 
@@ -224,12 +204,12 @@ function AppContent() {
         minHeight: "100vh",
       }}
     >
-      {isAuthenticated && !pathname.includes("/authentication") && pathname !== "/" && (
+      {isAuthenticated && !isAuthRoute && (
         <Sidenav
           color={sidenavColor}
           brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
           brandName="Pathshala"
-          routes={routes}
+          routes={userType === "teacher" ? teacherRoutes : routes}
           onMouseEnter={handleOnMouseEnter}
           onMouseLeave={handleOnMouseLeave}
         />
@@ -238,13 +218,8 @@ function AppContent() {
         sx={({ breakpoints }) => ({
           minHeight: "100vh",
           position: "relative",
-          marginLeft:
-            isAuthenticated && !pathname.includes("/authentication")
-              ? miniSidenav
-                ? "120px"
-                : "274px"
-              : "0",
-          transition: "all 0.3s ease-in-out",
+          marginLeft: isAuthenticated && !isAuthRoute ? (miniSidenav ? "120px" : "274px") : "0",
+          transition: "margin-left 0.3s ease-in-out",
           padding: "16px",
           [breakpoints.down("sm")]: {
             marginLeft: "0",
@@ -264,10 +239,24 @@ function AppContent() {
         )}
         {layout === "vr" && <Configurator />}
         <Routes>
-          <Route path="/" element={<Navigate to="/authentication/sign-up" replace />} />
           {getRoutes(routes)}
+          {getRoutes(teacherRoutes)}
           <Route path="/ar-view" element={<ARView />} />
-          <Route path="*" element={<Navigate to="/authentication/sign-up" replace />} />
+          <Route
+            path="*"
+            element={
+              <Navigate
+                to={
+                  isAuthenticated
+                    ? userType === "teacher"
+                      ? "/teacher-dashboard"
+                      : "/dashboard"
+                    : "/authentication/student-sign-up"
+                }
+                replace
+              />
+            }
+          />
         </Routes>
       </MDBox>
     </MDBox>

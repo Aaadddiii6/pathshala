@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Card from "@mui/material/Card";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -9,7 +9,67 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import CardContent from "@mui/material/CardContent";
 
+const questions = [
+  {
+    question: "What is the time complexity of binary search?",
+    options: ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+    correctAnswer: 1,
+  },
+  {
+    question: "Which data structure uses LIFO (Last In First Out)?",
+    options: ["Queue", "Stack", "Array", "Linked List"],
+    correctAnswer: 1,
+  },
+  {
+    question: "What does HTML stand for?",
+    options: [
+      "Hyper Text Markup Language",
+      "High Tech Modern Language",
+      "Hyper Transfer Markup Language",
+      "Home Tool Markup Language",
+    ],
+    correctAnswer: 0,
+  },
+  {
+    question: "Which of these is not a programming paradigm?",
+    options: ["Object-Oriented", "Functional", "Procedural", "Alphabetical"],
+    correctAnswer: 3,
+  },
+  {
+    question: "What is the purpose of CSS?",
+    options: [
+      "To style web pages",
+      "To create databases",
+      "To handle server requests",
+      "To compile code",
+    ],
+    correctAnswer: 0,
+  },
+];
+
 function ComputerScienceQuiz() {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [showResult, setShowResult] = useState(false);
+  const [score, setScore] = useState(0);
+
+  const handleAnswerSelect = (optionIndex) => {
+    setSelectedAnswer(optionIndex);
+    setShowResult(true);
+
+    if (optionIndex === questions[currentQuestion].correctAnswer) {
+      setScore(score + 1);
+    }
+  };
+
+  const handleNextQuestion = () => {
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+      setSelectedAnswer(null);
+      setShowResult(false);
+    }
+  };
+
   const getOptionStyle = (optionIndex) => {
     if (!showResult) {
       return {
@@ -122,6 +182,53 @@ function ComputerScienceQuiz() {
                     </Grid>
                   ))}
                 </Grid>
+
+                <MDBox mt={4} display="flex" justifyContent="space-between" alignItems="center">
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      if (currentQuestion > 0) {
+                        setCurrentQuestion(currentQuestion - 1);
+                        setSelectedAnswer(null);
+                        setShowResult(false);
+                      }
+                    }}
+                    disabled={currentQuestion === 0}
+                    sx={{
+                      color: "#E6E6FA",
+                      borderColor: "rgba(255, 255, 255, 0.3)",
+                      "&:hover": {
+                        borderColor: "rgba(255, 255, 255, 0.5)",
+                      },
+                    }}
+                  >
+                    Previous Question
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={handleNextQuestion}
+                    disabled={!showResult}
+                    sx={{
+                      background: "linear-gradient(135deg, #4B79A1, #283E51)",
+                      color: "#FFFFFF",
+                      padding: "10px 20px",
+                      fontSize: "1rem",
+                      "&:hover": {
+                        background: "linear-gradient(135deg, #5B89B1, #384E61)",
+                      },
+                    }}
+                  >
+                    {currentQuestion === questions.length - 1 ? "Finish Quiz" : "Next Question"}
+                  </Button>
+                </MDBox>
+
+                {currentQuestion === questions.length - 1 && showResult && (
+                  <MDBox mt={3}>
+                    <MDTypography variant="h5" color="#E6E6FA">
+                      Quiz Complete! Your score: {score} out of {questions.length}
+                    </MDTypography>
+                  </MDBox>
+                )}
               </CardContent>
             </Card>
           </Grid>
