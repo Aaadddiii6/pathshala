@@ -3,6 +3,10 @@ import CreateQuiz from "layouts/quiz/create-quiz";
 import SubjectQuizCreator from "layouts/quiz/create-quiz/subject-quiz-creator";
 import ARModelUpload from "layouts/teacher-dashboard/ar-model-upload";
 import ClassroomLink from "layouts/classroom-link";
+import Profile from "layouts/profile";
+import SignIn from "layouts/authentication/sign-in";
+import SignUp from "layouts/authentication/student-sign-up";
+import Chatbot from "layouts/chatbot";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -80,6 +84,14 @@ const teacherRoutes = [
     icon: <Icon fontSize="medium">video_camera_front</Icon>,
     component: <ClassroomLink />,
     noCollapse: true,
+  },
+  {
+    type: "collapse",
+    name: "Chatbot Assistant",
+    key: "chatbot",
+    icon: <Icon fontSize="small">support_agent</Icon>,
+    route: "/chatbot",
+    component: <Chatbot />,
   },
 ];
 
