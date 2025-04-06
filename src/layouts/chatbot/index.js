@@ -3,7 +3,7 @@ import { Grid, Card, Icon, IconButton, TextField } from "@mui/material";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import Together from "together-ai";
 import SendIcon from "@mui/icons-material/Send";
 import Chip from "@mui/material/Chip";
 import MenuItem from "@mui/material/MenuItem";
@@ -12,12 +12,10 @@ import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 
-// Initialize Gemini AI with your API key
+// Initialize Together AI with your API key
 // Note: You should store this in an environment variable in production
-const API_KEY = "AIzaSyDZqWj2MAe2k2EQAiLBl30ZPPjcsOMO7L0";
-const genAI = new GoogleGenerativeAI(API_KEY, {
-  apiVersion: "v1",
-});
+const TOGETHER_API_KEY = "29eefa75b78a78774a388aa506f535370b10a45f2694922a232b8be7fc886f8f";
+const together = new Together({ apiKey: TOGETHER_API_KEY });
 
 const subjects = [
   "Mathematics",
@@ -80,40 +78,18 @@ function Chatbot() {
     setError(null);
 
     try {
-      // Get response from Gemini
-      const model = genAI.getGenerativeModel({
-        model: "gemini-pro",
-        generationConfig: {
-          temperature: 0.7,
-          topK: 40,
-          topP: 0.95,
-          maxOutputTokens: 1024,
-        },
-        safetySettings: [
-          {
-            category: "HARM_CATEGORY_HARASSMENT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE",
-          },
-          {
-            category: "HARM_CATEGORY_HATE_SPEECH",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE",
-          },
-          {
-            category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE",
-          },
-          {
-            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE",
-          },
-        ],
+      // Get response from Together AI
+      const response = await together.chat.completions.create({
+        model: "mistralai/Mixtral-8x7B-Instruct-v0.1",
+        messages: [{ role: "user", content: fullPrompt }],
+        temperature: 0.7,
+        top_p: 0.95,
+        top_k: 40,
+        max_tokens: 1024,
       });
 
-      const result = await model.generateContent({
-        contents: [{ role: "user", parts: [{ text: fullPrompt }] }],
-      });
-      const response = await result.response;
-      const text = response.text();
+      // Extract the response text
+      const text = response.choices?.[0]?.message?.content;
 
       if (!text) {
         throw new Error("Empty response from AI");
@@ -126,11 +102,21 @@ function Chatbot() {
 
       let errorMessage = "I apologize, but I'm having trouble processing your request.";
 
-      if (error.message && error.message.includes("API key")) {
-        errorMessage = "API key error: Please check your Gemini API key configuration.";
-      } else if (error.message && error.message.includes("quota")) {
+      // Basic error handling for Together AI (can be expanded)
+      if (error.response) {
+        if (error.response.status === 401) {
+          errorMessage = "API key error: Please check your Together AI API key configuration.";
+        } else if (error.response.status === 429) {
+          errorMessage =
+            "API rate limit or quota exceeded: Please check your Together AI plan or try again later.";
+        } else {
+          errorMessage = `API Error: ${error.response.status} - ${
+            error.response.data?.message || "Unknown API error"
+          }`;
+        }
+      } else if (error.message && error.message.includes("Empty response")) {
         errorMessage =
-          "API quota exceeded: The daily limit for AI requests has been reached. Please try again later.";
+          "Received an empty response from the AI. Please try rephrasing your request.";
       }
 
       setError(errorMessage);
