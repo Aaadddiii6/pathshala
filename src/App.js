@@ -154,7 +154,7 @@ function AppContent() {
       borderRadius="50%"
       position="fixed"
       right="2rem"
-      bottom="2rem"
+      bottom={{ xs: "calc(2rem + 80px)", sm: "2rem" }}
       zIndex={99}
       color="dark"
       sx={{
