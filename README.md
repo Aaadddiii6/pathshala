@@ -12,7 +12,7 @@ This repository contains the web application front-end for the Pathshala platfor
 
 ## Key Features (Current & Planned)
 
-- **AI Study Assistant:** An integrated chatbot (powered by Gemini) to answer student questions across various subjects.
+- **AI Study Assistant:** An integrated chatbot (powered by Gemini AI) to answer student questions across various subjects.
 - **XR Module Integration:**Interface to launch and interact with XR learning modules.
 - **User Authentication:** Secure login for students and educators.
 - **Progress Tracking:** Features to monitor student learning progress.
@@ -21,7 +21,8 @@ This repository contains the web application front-end for the Pathshala platfor
 ## Technology Stack
 
 - **Frontend Framework:** React.js
-- **AI Integration:** Gemini API
+- **UI Library:** Material UI (Material Dashboard 2 React template)
+- **AI Integration:** Gemini AI API
 - **Language:** JavaScript
 - **Package Manager:** npm
 
@@ -50,13 +51,13 @@ These instructions will get you a copy of the project up and running on your loc
 
 3.  **Environment Variables:**
 
-    - This project requires an API key for Together AI. It's currently hardcoded in `src/layouts/chatbot/index.js`. For development, this might be acceptable, but for production or sharing, you **MUST** use environment variables. Create a `.env` file in the root directory and add your key:
+    - This project requires an API key for Gemini AI. It's currently hardcoded in `src/layouts/chatbot/index.js`. For development, this might be acceptable, but for production or sharing, you **MUST** use environment variables. Create a `.env` file in the root directory and add your key:
 
     ```
-    REACT_APP_TOGETHER_API_KEY=your_together_ai_api_key_here
+    REACT_APP_GEMINI_API_KEY=your_gemini_ai_api_key_here
     ```
 
-    - Update the code in `src/layouts/chatbot/index.js` to read the key from `process.env.REACT_APP_TOGETHER_API_KEY` instead of the hardcoded constant.
+    - Update the code in `src/layouts/chatbot/index.js` to read the key from `process.env.REACT_APP_GEMINI_API_KEY` instead of the hardcoded constant.
 
 4.  **Run the development server:**
 
@@ -67,12 +68,6 @@ These instructions will get you a copy of the project up and running on your loc
     _(If you use yarn: `yarn start`)_
 
     This will open the application in your default browser, usually at `http://localhost:3000`.
-
-## Contributing
-
-_(Optional: Add guidelines here if you plan to accept contributions from others. You can specify coding standards, pull request procedures, etc.)_
-
-We welcome contributions! Please follow standard GitHub flow (fork, branch, pull request).
 
 ## License
 

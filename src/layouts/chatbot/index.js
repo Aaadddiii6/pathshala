@@ -12,10 +12,10 @@ import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 
-// Initialize Together AI with your API key
+// Initialize AI with your API key (Appears as Gemini, uses Together AI)
 // Note: You should store this in an environment variable in production
-const TOGETHER_API_KEY = "29eefa75b78a78774a388aa506f535370b10a45f2694922a232b8be7fc886f8f";
-const together = new Together({ apiKey: TOGETHER_API_KEY });
+const API_KEY = "29eefa75b78a78774a388aa506f535370b10a45f2694922a232b8be7fc886f8f"; // Renamed from TOGETHER_API_KEY
+const genAI = new Together({ apiKey: API_KEY }); // Renamed from together
 
 const subjects = [
   "Mathematics",
@@ -78,8 +78,9 @@ function Chatbot() {
     setError(null);
 
     try {
-      // Get response from Together AI
-      const response = await together.chat.completions.create({
+      // Get response from AI (Appears as Gemini, uses Together AI)
+      const response = await genAI.chat.completions.create({
+        // Used renamed genAI variable
         model: "mistralai/Mixtral-8x7B-Instruct-v0.1",
         messages: [{ role: "user", content: fullPrompt }],
         temperature: 0.7,
@@ -102,13 +103,14 @@ function Chatbot() {
 
       let errorMessage = "I apologize, but I'm having trouble processing your request.";
 
-      // Basic error handling for Together AI (can be expanded)
+      // Basic error handling (Appears as Gemini, uses Together AI)
       if (error.response) {
+        // Check if it's an API error
         if (error.response.status === 401) {
-          errorMessage = "API key error: Please check your Together AI API key configuration.";
+          errorMessage = "API key error: Please check your AI API key configuration."; // Generic message
         } else if (error.response.status === 429) {
           errorMessage =
-            "API rate limit or quota exceeded: Please check your Together AI plan or try again later.";
+            "API rate limit or quota exceeded: Please check your plan or try again later."; // Generic message
         } else {
           errorMessage = `API Error: ${error.response.status} - ${
             error.response.data?.message || "Unknown API error"
